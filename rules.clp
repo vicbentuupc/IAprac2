@@ -56,7 +56,8 @@
 (defrule READ_DATA::read_time "Read time available per day"
     ?user <- (object (is-a Persona))
     =>
-    (bind ?answer (numeric_question "¿De cuantos minutos dispones al día?" 30 120))
+    (bind ?answer (numeric_question "¿De cuantos minutos dispones al dia?" 30 120))
+    (send ?user put-tiempo_diario ?answer)
     (assert (daily_time ?answer))
 )
 
@@ -66,8 +67,9 @@
     (bind ?has_answer (yes_or_no_question "¿Tienes algun objetivo concreto en mente?"))
     (if ?has_answer
         then
-        (bind ?possible_objectives (create$ mantenimiento ponerse_en_forma rebajar_peso musculación flexibilidad equilibrio))
-        (bind ?answer (multiple_question "What are your objectives?" ?possible_objectives))
+        (bind ?possible_objectives (create$ mantenimiento ponerse_en_forma rebajar_peso musculacion flexibilidad equilibrio))
+        (bind ?answer (multiple_question "Cuales son tus objetivos?" ?possible_objectives))
+        (send ?user put-objetivo ?answer)
         (assert (filter_objectives))
     )
 )

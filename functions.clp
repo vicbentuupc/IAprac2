@@ -24,7 +24,7 @@
 
 (deffunction MAIN::numeric_question (?question ?rangeini ?rangeend)
     (printout t ?question crlf)
-    (printout t "Introduce un número entre: [" ?rangeini ", " ?rangeend"]" crlf)
+    (printout t "Introduce un numero entre: [" ?rangeini ", " ?rangeend"]" crlf)
     (bind ?answer (read))
     (while (or (not (integerp ?answer)) (not(and(>= ?answer ?rangeini)(<= ?answer ?rangeend)))) do
         (printout t "Valor no válido, prueba otra vez." crlf)
@@ -47,7 +47,7 @@
         (?var ?values)
         (lowcase ?var)
     )
-    (printout ?question)
+    (printout t ?question crlf)
     (printout t "Introduce tantos como quieras de los siguientes valores, separados por espacio en una sola línea:" crlf (implode$ ?values) crlf)
     (bind ?answer (readline))
     (bind ?res (explode$ ?answer))
