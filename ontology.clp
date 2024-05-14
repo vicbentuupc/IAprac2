@@ -17,7 +17,7 @@
     (multislot combina_con
         (type INSTANCE)
         (create-accessor read-write))
-    (slot objetivo
+    (multislot objetivo
         (type STRING)
         (create-accessor read-write))
 )

@@ -134,18 +134,18 @@
     =>
     (bind ?i 1)
     (bind ?aux (create$))
-
     (bind ?objetivos_escogidos (send ?user get-objetivo))
 
     (while (<= ?i (length$ ?*ejercicios*)) do
         (bind ?ejercicio_nth (nth$ ?i ?*ejercicios*))
         (bind ?obj_ejercicio (send ?ejercicio_nth get-objetivo))
-        (if (member ?obj_ejercicio ?objetivos_escogidos)
-            then (bind ?aux (create$ ?aux ?ejercicio_nth)))
+        (if (tienen_elemento_en_comun ?objetivos_escogidos ?obj_ejercicio) ;;objetivos_escogidos es una lista de simbolos
+            then (bind ?aux (create$ ?aux ?ejercicio_nth)))                ;;obj_ejercicio es una lista de strings
+
         (bind ?i (+ ?i 1))
     )
-    (bind ?*ejercicios* ?aux)
 
+    (bind ?*ejercicios* ?aux)
     (retract ?hecho)
 )
 

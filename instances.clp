@@ -3,9 +3,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;; Ejercicios ;;;;;;;;;;;;;;;;;;;;;;
 
-([Caminata_rapida] of Ejercicio (objetivo "mantenimiento") (nombre "Caminata rapida"))
+([Caminata_rapida] of Ejercicio (objetivo "mantenimiento" "ponerse_en_forma") (nombre "Caminata rapida"))
 
-([Plancha] of Ejercicio (objetivo "mantenimiento") (nombre "Plancha"))
+([Plancha] of Ejercicio (objetivo "mantenimiento" "ponerse_en_forma") (nombre "Plancha"))
 
 ([Bicicleta_estatica] of Ejercicio (objetivo "mantenimiento") (nombre "Bicicleta estatica"))
 

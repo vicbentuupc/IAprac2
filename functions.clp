@@ -72,10 +72,10 @@
     ?res
 )
 
-(deffunction MAIN::tienen_elemento_en_comun (?list1 ?list2)
+(deffunction MAIN::tienen_elemento_en_comun (?list1 ?list2) ;;list1 son simbolos, list2 son strings
     (bind ?found FALSE)
     (foreach ?elem1 ?list1
-        (bind ?el (str-cat ?elem1))
+        (bind ?el (str-cat ?elem1))  ;; Convertir el símbolo a string
         (if (member$ ?el ?list2) then
         (bind ?found TRUE)
         (break)
