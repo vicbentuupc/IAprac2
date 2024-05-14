@@ -1,5 +1,5 @@
 ;; Global Variables
-
+(defglobal ?*ejercicios* = (create$ ""))
 
 ;; Modules
 (defmodule MAIN (export ?ALL))
@@ -93,6 +93,17 @@
 
 
 
+;;;algunos inputs van directamente al Process module, y algunos inputs tienen que pasar por el abstract module antes
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -111,8 +122,35 @@
     (declare (salience 10))
     ?user <- (object (is-a Persona))
     =>
-    ()
+    (bind ?*ejercicios* (find-all-instances ((?inst Ejercicio)) TRUE))
 )
+
+
+
+
+(defrule PROCESS_DATA::filtrar_objetivo "Recorre todos los ejercicios y filtra los si tienen objetivos en comun con user"
+    ?hecho <- (filter_objectives)
+    ?user <- (object(is-a Persona))
+    =>
+    (bind ?i 1)
+    (bind ?aux (create$))
+
+    (bind ?objetivos_escogidos (send ?user get-objetivo))
+
+    (while (<= ?i (length$ ?*ejercicios*)) do
+        (bind ?ejercicio_nth (nth$ ?i ?*ejercicios*))
+        (bind ?obj_ejercicio (send ?ejercicio_nth get-objetivo))
+        (if (member ?obj_ejercicio ?objetivos_escogidos)
+            then (bind ?aux (create$ ?aux ?ejercicio_nth)))
+        (bind ?i (+ ?i 1))
+    )
+    (bind ?*ejercicios* ?aux)
+
+    (retract ?hecho)
+)
+
+
+
 
 
 
@@ -131,6 +169,7 @@
 
 
 (defrule PROCESS_DATA::end_process "End processing and show results"
+    (declare (salience -10))
     ?user <- (object (is-a Persona))
     =>
     (focus SHOW_DATA)
@@ -141,5 +180,32 @@
 
 (defrule SHOW_DATA::show_results "Show the final schedule"
     ?user <- (object (is-a Persona))
-    
+    =>
+    (printout t "Esta es la rutina que se te recomienda:" crlf)
+    (printout t crlf)
+    (bind ?i 1)
+
+    (bind ?ejercicio_nth (nth$ ?i ?*ejercicios*))
+    (bind ?nom_ejercicio (send ?ejercicio_nth get-nombre))
+    (printout t "Lunes: " ?nom_ejercicio crlf)
+    (bind ?i (+ ?i 1))
+
+    (bind ?ejercicio_nth (nth$ ?i ?*ejercicios*))
+    (bind ?nom_ejercicio (send ?ejercicio_nth get-nombre))
+    (printout t "Martes: " ?nom_ejercicio crlf)
+    (bind ?i (+ ?i 1))
+
+    (bind ?ejercicio_nth (nth$ ?i ?*ejercicios*))
+    (bind ?nom_ejercicio (send ?ejercicio_nth get-nombre))
+    (printout t "Miercoles: " ?nom_ejercicio crlf)
+    (bind ?i (+ ?i 1))
+
+    (bind ?ejercicio_nth (nth$ ?i ?*ejercicios*))
+    (bind ?nom_ejercicio (send ?ejercicio_nth get-nombre))
+    (printout t "Jueves: " ?nom_ejercicio crlf)
+    (bind ?i (+ ?i 1))
+
+    (bind ?ejercicio_nth (nth$ ?i ?*ejercicios*))
+    (bind ?nom_ejercicio (send ?ejercicio_nth get-nombre))
+    (printout t "Viernes: " ?nom_ejercicio crlf)
 )

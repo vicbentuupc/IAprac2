@@ -8,11 +8,17 @@
     (is-a USER)
     (role concrete)
     (pattern-match reactive)
+    (slot nombre
+        (type STRING)
+        (create-accessor read-write))
     (multislot bueno_para
         (type INSTANCE)
         (create-accessor read-write))
     (multislot combina_con
         (type INSTANCE)
+        (create-accessor read-write))
+    (slot objetivo
+        (type STRING)
         (create-accessor read-write))
 )
 
