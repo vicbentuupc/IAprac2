@@ -13,14 +13,14 @@
 #    Object Properties
 #################################################################
 
-###  http://www.semanticweb.org/vicbe/ontologies/2024/4/prac2Ontology/bueno_para
-:bueno_para rdf:type owl:ObjectProperty ;
-            rdfs:subPropertyOf owl:topObjectProperty ;
-            rdfs:domain :Ejercicio ;
-            rdfs:range :Problema .
+###  http://www.semanticweb.org/vicbe/ontologies/2024/4/prac2Ontology#Se_Le_Recomienda
+:Se_Le_Recomienda rdf:type owl:ObjectProperty ;
+                  rdfs:subPropertyOf owl:topObjectProperty ;
+                  rdfs:domain :Persona ;
+                  rdfs:range :Ejercicio .
 
 
-###  http://www.semanticweb.org/vicbe/ontologies/2024/4/prac2Ontology/combina_con
+###  http://www.semanticweb.org/vicbe/ontologies/2024/4/prac2Ontology#combina_con
 :combina_con rdf:type owl:ObjectProperty ;
              rdfs:subPropertyOf owl:topObjectProperty ;
              rdf:type owl:SymmetricProperty ;
@@ -28,55 +28,128 @@
              rdfs:range :Ejercicio .
 
 
-###  http://www.semanticweb.org/vicbe/ontologies/2024/4/prac2Ontology/impide
-:impide rdf:type owl:ObjectProperty ;
-        rdfs:subPropertyOf owl:topObjectProperty ;
-        rdfs:domain :Problema ;
-        rdfs:range :Ejercicio .
-
-
-###  http://www.semanticweb.org/vicbe/ontologies/2024/4/prac2Ontology/padece
-:padece rdf:type owl:ObjectProperty ;
-        rdfs:subPropertyOf owl:topObjectProperty ;
-        rdfs:domain :Persona ;
-        rdfs:range :Problema .
-
-
-###  http://www.w3.org/2002/07/owl#topObjectProperty
-owl:topObjectProperty rdfs:domain :Persona ;
-                      rdfs:range :Problema .
-
-
 #################################################################
 #    Data properties
 #################################################################
 
-###  http://www.semanticweb.org/vicbe/ontologies/2024/4/prac2Ontology/duracion
-:duracion rdf:type owl:DatatypeProperty ;
+###  http://www.semanticweb.org/vicbe/ontologies/2024/4/prac2Ontology#Condiciones_Preferibles
+:Condiciones_Preferibles rdf:type owl:DatatypeProperty ;
+                         rdfs:subPropertyOf owl:topDataProperty ;
+                         rdfs:domain :Ejercicio ;
+                         rdfs:range xsd:string .
+
+
+###  http://www.semanticweb.org/vicbe/ontologies/2024/4/prac2Ontology#Condiciones_incompatibles
+:Condiciones_incompatibles rdf:type owl:DatatypeProperty ;
+                           rdfs:subPropertyOf owl:topDataProperty ;
+                           rdfs:domain :Ejercicio ;
+                           rdfs:range xsd:string .
+
+
+###  http://www.semanticweb.org/vicbe/ontologies/2024/4/prac2Ontology#Ejercicios_combina
+:Ejercicios_combina rdf:type owl:DatatypeProperty ;
+                    rdfs:subPropertyOf owl:topDataProperty ;
+                    rdfs:domain :Ejercicio ;
+                    rdfs:range xsd:string .
+
+
+###  http://www.semanticweb.org/vicbe/ontologies/2024/4/prac2Ontology#altura
+:altura rdf:type owl:DatatypeProperty ;
+        rdfs:subPropertyOf owl:topDataProperty ;
+        rdf:type owl:FunctionalProperty ;
+        rdfs:domain :Persona ;
+        rdfs:range xsd:integer .
+
+
+###  http://www.semanticweb.org/vicbe/ontologies/2024/4/prac2Ontology#aparatos
+:aparatos rdf:type owl:DatatypeProperty ;
           rdfs:subPropertyOf owl:topDataProperty ;
-          rdfs:range xsd:integer .
-
-
-###  http://www.semanticweb.org/vicbe/ontologies/2024/4/prac2Ontology/nivel_cardio
-:nivel_cardio rdf:type owl:DatatypeProperty ;
-              rdfs:subPropertyOf owl:topDataProperty ;
-              rdfs:range xsd:integer .
-
-
-###  http://www.semanticweb.org/vicbe/ontologies/2024/4/prac2Ontology/nivel_fuerza
-:nivel_fuerza rdf:type owl:DatatypeProperty ;
-              rdfs:subPropertyOf owl:topDataProperty ;
-              rdfs:range xsd:integer .
-
-
-###  http://www.semanticweb.org/vicbe/ontologies/2024/4/prac2Ontology/objetivo
-:objetivo rdf:type owl:DatatypeProperty ;
-          rdfs:subPropertyOf owl:topDataProperty ;
-          rdfs:domain :Persona ;
+          rdfs:domain :Ejercicio ;
           rdfs:range xsd:string .
 
 
-###  http://www.semanticweb.org/vicbe/ontologies/2024/4/prac2Ontology/tiempo_diario
+###  http://www.semanticweb.org/vicbe/ontologies/2024/4/prac2Ontology#dificultad
+:dificultad rdf:type owl:DatatypeProperty ;
+            rdfs:subPropertyOf owl:topDataProperty ;
+            rdfs:domain :Ejercicio ;
+            rdfs:range xsd:integer .
+
+
+###  http://www.semanticweb.org/vicbe/ontologies/2024/4/prac2Ontology#dificultad_ejercicios
+:dificultad_ejercicios rdf:type owl:DatatypeProperty ;
+                       rdfs:subPropertyOf owl:topDataProperty ;
+                       rdfs:domain :Persona ;
+                       rdfs:range xsd:int .
+
+
+###  http://www.semanticweb.org/vicbe/ontologies/2024/4/prac2Ontology#duracion
+:duracion rdf:type owl:DatatypeProperty ;
+          rdfs:subPropertyOf owl:topDataProperty ;
+          rdfs:domain :Ejercicio ;
+          rdfs:range xsd:integer .
+
+
+###  http://www.semanticweb.org/vicbe/ontologies/2024/4/prac2Ontology#edad
+:edad rdf:type owl:DatatypeProperty ;
+      rdfs:subPropertyOf owl:topDataProperty ;
+      rdf:type owl:FunctionalProperty ;
+      rdfs:domain :Persona ;
+      rdfs:range xsd:integer .
+
+
+###  http://www.semanticweb.org/vicbe/ontologies/2024/4/prac2Ontology#estilo_vida
+:estilo_vida rdf:type owl:DatatypeProperty ;
+             rdfs:subPropertyOf owl:topDataProperty ;
+             rdfs:domain :Persona ;
+             rdfs:range xsd:integer .
+
+
+###  http://www.semanticweb.org/vicbe/ontologies/2024/4/prac2Ontology#grupo_muscular
+:grupo_muscular rdf:type owl:DatatypeProperty ;
+                rdfs:subPropertyOf owl:topDataProperty ;
+                rdfs:domain :Ejercicio ;
+                rdfs:range xsd:string .
+
+
+###  http://www.semanticweb.org/vicbe/ontologies/2024/4/prac2Ontology#nombre
+:nombre rdf:type owl:DatatypeProperty ;
+        rdfs:subPropertyOf owl:topDataProperty ;
+        rdfs:domain :Ejercicio ,
+                    :Persona ;
+        rdfs:range xsd:string .
+
+
+###  http://www.semanticweb.org/vicbe/ontologies/2024/4/prac2Ontology#numero_repeticiones
+:numero_repeticiones rdf:type owl:DatatypeProperty ;
+                     rdfs:subPropertyOf owl:topDataProperty ;
+                     rdfs:domain :Ejercicio ;
+                     rdfs:range xsd:int .
+
+
+###  http://www.semanticweb.org/vicbe/ontologies/2024/4/prac2Ontology#objetivo
+:objetivo rdf:type owl:DatatypeProperty ;
+          rdfs:subPropertyOf owl:topDataProperty ;
+          rdfs:domain :Ejercicio ,
+                      :Persona ;
+          rdfs:range xsd:string .
+
+
+###  http://www.semanticweb.org/vicbe/ontologies/2024/4/prac2Ontology#peso
+:peso rdf:type owl:DatatypeProperty ;
+      rdfs:subPropertyOf owl:topDataProperty ;
+      rdf:type owl:FunctionalProperty ;
+      rdfs:domain :Persona ;
+      rdfs:range xsd:integer .
+
+
+###  http://www.semanticweb.org/vicbe/ontologies/2024/4/prac2Ontology#problemas_salud
+:problemas_salud rdf:type owl:DatatypeProperty ;
+                 rdfs:subPropertyOf owl:topDataProperty ;
+                 rdfs:domain :Persona ;
+                 rdfs:range xsd:string .
+
+
+###  http://www.semanticweb.org/vicbe/ontologies/2024/4/prac2Ontology#tiempo_diario
 :tiempo_diario rdf:type owl:DatatypeProperty ;
                rdfs:subPropertyOf owl:topDataProperty ;
                rdf:type owl:FunctionalProperty ;
@@ -84,20 +157,20 @@ owl:topObjectProperty rdfs:domain :Persona ;
                rdfs:range xsd:integer .
 
 
+###  http://www.w3.org/2002/07/owl#topDataProperty
+owl:topDataProperty rdfs:range xsd:string .
+
+
 #################################################################
 #    Classes
 #################################################################
 
-###  http://www.semanticweb.org/vicbe/ontologies/2024/4/prac2Ontology/Ejercicio
+###  http://www.semanticweb.org/vicbe/ontologies/2024/4/prac2Ontology#Ejercicio
 :Ejercicio rdf:type owl:Class .
 
 
-###  http://www.semanticweb.org/vicbe/ontologies/2024/4/prac2Ontology/Persona
+###  http://www.semanticweb.org/vicbe/ontologies/2024/4/prac2Ontology#Persona
 :Persona rdf:type owl:Class .
-
-
-###  http://www.semanticweb.org/vicbe/ontologies/2024/4/prac2Ontology/Problema
-:Problema rdf:type owl:Class .
 
 
 ###  Generated by the OWL API (version 4.5.26.2023-07-17T20:34:13Z) https://github.com/owlcs/owlapi
