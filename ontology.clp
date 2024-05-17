@@ -2,7 +2,7 @@
 ;;; ontology.clp
 ;;; Translated by owl2clips
 ;;; Translated to CLIPS from ontology .\ontology.ttl
-;;; :Date 16/05/2024 22:27:53
+;;; :Date 17/05/2024 21:20:55
 
 (defclass Ejercicio
     (is-a USER)
@@ -10,6 +10,12 @@
     (pattern-match reactive)
     (multislot combina_con
         (type INSTANCE)
+        (create-accessor read-write))
+    (multislot Condiciones_incompatibles
+        (type STRING)
+        (create-accessor read-write))
+    (multislot Ejercicios_combina
+        (type STRING)
         (create-accessor read-write))
     (slot calorias_por_min
         (type INTEGER)
@@ -25,6 +31,9 @@
         (create-accessor read-write))
     (slot nivel_fuerza
         (type INTEGER)
+        (create-accessor read-write))
+    (multislot objetivo
+        (type STRING)
         (create-accessor read-write))
     (slot repeticiones_max
         (type INTEGER)
@@ -44,11 +53,11 @@
     (is-a USER)
     (role concrete)
     (pattern-match reactive)
-    (multislot padece
-        (type INSTANCE)
-        (create-accessor read-write))
     (multislot topObjectProperty
         (type INSTANCE)
+        (create-accessor read-write))
+    (slot altura
+        (type INTEGER)
         (create-accessor read-write))
     (slot edad
         (type INTEGER)
