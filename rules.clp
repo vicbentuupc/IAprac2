@@ -123,6 +123,8 @@
     ?user <- (object (is-a Persona))
     =>
     (bind ?*ejercicios* (find-all-instances ((?inst Ejercicio)) TRUE))
+    ;; Debug print
+    (printout t "Ejercicios encontrados: " ?*ejercicios* crlf)
 )
 
 
@@ -185,27 +187,35 @@
     (printout t crlf)
     (bind ?i 1)
 
+    ;; Debug print
+    (printout t "Fetching exercises..." crlf)
+
     (bind ?ejercicio_nth (nth$ ?i ?*ejercicios*))
-    (bind ?nom_ejercicio (send ?ejercicio_nth get-nombre))
+    (printout t "Exercise instance for Lunes: " ?ejercicio_nth crlf)
+    (bind ?nom_ejercicio (str-cat ?ejercicio_nth))
     (printout t "Lunes: " ?nom_ejercicio crlf)
     (bind ?i (+ ?i 1))
 
     (bind ?ejercicio_nth (nth$ ?i ?*ejercicios*))
-    (bind ?nom_ejercicio (send ?ejercicio_nth get-nombre))
+    (printout t "Exercise instance for Martes: " ?ejercicio_nth crlf)
+    (bind ?nom_ejercicio (str-cat ?ejercicio_nth))
     (printout t "Martes: " ?nom_ejercicio crlf)
     (bind ?i (+ ?i 1))
 
     (bind ?ejercicio_nth (nth$ ?i ?*ejercicios*))
-    (bind ?nom_ejercicio (send ?ejercicio_nth get-nombre))
+    (printout t "Exercise instance for Miercoles: " ?ejercicio_nth crlf)
+    (bind ?nom_ejercicio (str-cat ?ejercicio_nth))
     (printout t "Miercoles: " ?nom_ejercicio crlf)
     (bind ?i (+ ?i 1))
 
     (bind ?ejercicio_nth (nth$ ?i ?*ejercicios*))
-    (bind ?nom_ejercicio (send ?ejercicio_nth get-nombre))
+    (printout t "Exercise instance for Jueves: " ?ejercicio_nth crlf)
+    (bind ?nom_ejercicio (str-cat ?ejercicio_nth))
     (printout t "Jueves: " ?nom_ejercicio crlf)
     (bind ?i (+ ?i 1))
 
     (bind ?ejercicio_nth (nth$ ?i ?*ejercicios*))
-    (bind ?nom_ejercicio (send ?ejercicio_nth get-nombre))
+    (printout t "Exercise instance for Viernes: " ?ejercicio_nth crlf)
+    (bind ?nom_ejercicio (str-cat ?ejercicio_nth))
     (printout t "Viernes: " ?nom_ejercicio crlf)
 )
