@@ -34,6 +34,15 @@
     (export ?ALL)
 )
 
+(defmodule SORT
+    (import MAIN ?ALL)
+    (import READ_DATA ?ALL)
+    (import ABSTRACT_DATA ?ALL)
+    (import PROCESS_DATA ?ALL)
+    (import SHOW_DATA ?ALL)
+    (export ?ALL)
+)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;; MAIN MODULE ;;;;;;;;;;;;;;;;;;;;;;;;;
 (defrule MAIN::initiate "Initiate"
@@ -53,12 +62,18 @@
     (assert (name ?answer))
 )
 
+(defrule READ_DATA::read_age "Read age of user"
+    ?user <- (object (is-a Persona))
+    =>
+    (bind ?answer (numeric_question "Cuantos años tienes?" 18 100))
+    (send ?user put-edad ?answer)
+)
+
 (defrule READ_DATA::read_time "Read time available per day"
     ?user <- (object (is-a Persona))
     =>
     (bind ?answer (numeric_question "¿De cuantos minutos dispones al dia?" 30 120))
     (send ?user put-tiempo_diario ?answer)
-    (assert (daily_time ?answer))
 )
 
 (defrule READ_DATA::read_objectives "Read user objectives"
@@ -123,33 +138,67 @@
     ?user <- (object (is-a Persona))
     =>
     (bind ?*ejercicios* (find-all-instances ((?inst Ejercicio)) TRUE))
-    ;; Debug print
-    (printout t "Ejercicios encontrados: " ?*ejercicios* crlf)
 )
 
+;; Filtro total (elimina ejercios)
 
 
+; (defrule PROCESS_DATA::filter_age
+;     ?user <- (object (is-a Persona))
+;     =>
+;     (bind ?age (send ?user get-edad))
+;     (printout t ?age crlf)
+;     (foreach ?inst ?*ejercicios*
+;         (if  (< (send ?inst get-edad_max) ?age) then ;(and (slot-existp ?inst edad_max)
+;             (printout t "Delete: ")
+            
+;             ; (printout t ?inst "    " (send ?inst get-edad_max) crlf)
+;             (unmake-instance ?inst)
+;         )
+;     )
+; )
+
+
+
+
+
+
+
+;; Filtro parcial (puntua ejercicios)
 
 (defrule PROCESS_DATA::filtrar_objetivo "Recorre todos los ejercicios y filtra los si tienen objetivos en comun con user"
     ?hecho <- (filter_objectives)
-    ?user <- (object(is-a Persona))
+    ?user <- (object (is-a Persona))
     =>
     (bind ?i 1)
-    (bind ?aux (create$))
     (bind ?objetivos_escogidos (send ?user get-objetivo))
 
     (while (<= ?i (length$ ?*ejercicios*)) do
         (bind ?ejercicio_nth (nth$ ?i ?*ejercicios*))
         (bind ?obj_ejercicio (send ?ejercicio_nth get-objetivo))
-        (if (tienen_elemento_en_comun ?objetivos_escogidos ?obj_ejercicio) ;;objetivos_escogidos es una lista de simbolos
-            then (bind ?aux (create$ ?aux ?ejercicio_nth)))                ;;obj_ejercicio es una lista de strings
+        (bind ?shared_count 0)
+        
+        (foreach ?obj ?obj_ejercicio
+            (if (member$ ?obj ?objetivos_escogidos) then
+                (bind ?shared_count (+ ?shared_count 1))
+            )
+        )
+
+        (if (> ?shared_count 0) then
+            (bind ?current_score (send ?ejercicio_nth get-puntuacion))
+            (if (not (integerp ?current_score)) then
+                (bind ?current_score 0))
+            (bind ?new_score (+ ?current_score (* ?shared_count 10)))
+            (send ?ejercicio_nth put-puntuacion ?new_score)
+        )
 
         (bind ?i (+ ?i 1))
     )
 
-    (bind ?*ejercicios* ?aux)
     (retract ?hecho)
 )
+
+
 
 
 
@@ -174,48 +223,121 @@
     (declare (salience -10))
     ?user <- (object (is-a Persona))
     =>
-    (focus SHOW_DATA)
+    (focus SORT)
+    ; (focus SHOW_DATA)
 )
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;; SHOW DATA MODULE ;;;;;;;;;;;;;;;;;;;;;;;;;
 
+
+; (defrule SHOW_DATA::show_results "Show the final schedule"
+;     ?user <- (object (is-a Persona))
+;     =>
+;     (printout t crlf)
+;     (bind ?i 1)
+
+
+;     (bind ?ejercicio_nth (nth$ ?i ?*ejercicios*))
+;     (bind ?nom_ejercicio (str-cat ?ejercicio_nth))
+;     (printout t "Lunes: " ?nom_ejercicio crlf)
+;     (bind ?i (+ ?i 1))
+
+;     (bind ?ejercicio_nth (nth$ ?i ?*ejercicios*))
+;     (bind ?nom_ejercicio (str-cat ?ejercicio_nth))
+;     (printout t "Martes: " ?nom_ejercicio crlf)
+;     (bind ?i (+ ?i 1))
+
+;     (bind ?ejercicio_nth (nth$ ?i ?*ejercicios*))
+;     (bind ?nom_ejercicio (str-cat ?ejercicio_nth))
+;     (printout t "Miercoles: " ?nom_ejercicio crlf)
+;     (bind ?i (+ ?i 1))
+
+;     (bind ?ejercicio_nth (nth$ ?i ?*ejercicios*))
+;     (bind ?nom_ejercicio (str-cat ?ejercicio_nth))
+;     (printout t "Jueves: " ?nom_ejercicio crlf)
+;     (bind ?i (+ ?i 1))
+
+;     (bind ?ejercicio_nth (nth$ ?i ?*ejercicios*))
+;     (bind ?nom_ejercicio (str-cat ?ejercicio_nth))
+;     (printout t "Viernes: " ?nom_ejercicio crlf)
+; )
+
+
 (defrule SHOW_DATA::show_results "Show the final schedule"
     ?user <- (object (is-a Persona))
     =>
-    (printout t "Esta es la rutina que se te recomienda:" crlf)
     (printout t crlf)
     (bind ?i 1)
+    (bind ?days (create$ "Lunes" "Martes" "Miercoles" "Jueves" "Viernes"))
 
-    ;; Debug print
-    (printout t "Fetching exercises..." crlf)
+    (foreach ?day ?days
+        (if (<= ?i (length$ ?*ejercicios*)) then
+            (bind ?ejercicio_nth (nth$ ?i ?*ejercicios*))
+            (bind ?nombre_ejercicio (str-cat ?ejercicio_nth))
+            (printout t ?day ": " ?nombre_ejercicio crlf)
+            (bind ?i (+ ?i 1))
+        else
+            (printout t ?day ": " "No exercise assigned" crlf)
+        )
+    )
+)
 
-    (bind ?ejercicio_nth (nth$ ?i ?*ejercicios*))
-    (printout t "Exercise instance for Lunes: " ?ejercicio_nth crlf)
-    (bind ?nom_ejercicio (str-cat ?ejercicio_nth))
-    (printout t "Lunes: " ?nom_ejercicio crlf)
-    (bind ?i (+ ?i 1))
 
-    (bind ?ejercicio_nth (nth$ ?i ?*ejercicios*))
-    (printout t "Exercise instance for Martes: " ?ejercicio_nth crlf)
-    (bind ?nom_ejercicio (str-cat ?ejercicio_nth))
-    (printout t "Martes: " ?nom_ejercicio crlf)
-    (bind ?i (+ ?i 1))
 
-    (bind ?ejercicio_nth (nth$ ?i ?*ejercicios*))
-    (printout t "Exercise instance for Miercoles: " ?ejercicio_nth crlf)
-    (bind ?nom_ejercicio (str-cat ?ejercicio_nth))
-    (printout t "Miercoles: " ?nom_ejercicio crlf)
-    (bind ?i (+ ?i 1))
 
-    (bind ?ejercicio_nth (nth$ ?i ?*ejercicios*))
-    (printout t "Exercise instance for Jueves: " ?ejercicio_nth crlf)
-    (bind ?nom_ejercicio (str-cat ?ejercicio_nth))
-    (printout t "Jueves: " ?nom_ejercicio crlf)
-    (bind ?i (+ ?i 1))
 
-    (bind ?ejercicio_nth (nth$ ?i ?*ejercicios*))
-    (printout t "Exercise instance for Viernes: " ?ejercicio_nth crlf)
-    (bind ?nom_ejercicio (str-cat ?ejercicio_nth))
-    (printout t "Viernes: " ?nom_ejercicio crlf)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;; SORT MODULE ;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defrule SORT::order-by-score
+    =>
+    (bind ?i 1)
+    (while (<= ?i (length$ ?*ejercicios*)) do
+        (bind ?j (+ ?i 1))
+        (while (<= ?j (length$ ?*ejercicios*)) do
+            (bind ?ejercicio_i (nth$ ?i ?*ejercicios*))
+            (bind ?ejercicio_j (nth$ ?j ?*ejercicios*))
+            (bind ?score_i (send ?ejercicio_i get-puntuacion))
+            (bind ?score_j (send ?ejercicio_j get-puntuacion))
+            (if (< ?score_i ?score_j) then
+                (bind ?*ejercicios* (replace$ ?*ejercicios* ?i ?i ?ejercicio_j))
+                (bind ?*ejercicios* (replace$ ?*ejercicios* ?j ?j ?ejercicio_i))
+            )
+            (bind ?j (+ ?j 1))
+        )
+        (bind ?i (+ ?i 1))
+    )
+    (foreach ?ejercicio ?*ejercicios*
+        (printout t  (send ?ejercicio get-puntuacion) crlf)
+    )
+    (focus SHOW_DATA)
 )

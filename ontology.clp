@@ -2,7 +2,7 @@
 ;;; ontology.clp
 ;;; Translated by owl2clips
 ;;; Translated to CLIPS from ontology .\ontology.ttl
-;;; :Date 17/05/2024 21:20:55
+;;; :Date 19/05/2024 21:35:31
 
 (defclass Ejercicio
     (is-a USER)
@@ -11,16 +11,10 @@
     (multislot combina_con
         (type INSTANCE)
         (create-accessor read-write))
-    (multislot Condiciones_incompatibles
-        (type STRING)
-        (create-accessor read-write))
-    (multislot Ejercicios_combina
-        (type STRING)
-        (create-accessor read-write))
-    (slot calorias_por_min
+    (slot series
         (type INTEGER)
         (create-accessor read-write))
-    (multislot edad_max
+    (slot edad_max
         (type INTEGER)
         (create-accessor read-write))
     (multislot grupos_musculares
@@ -35,16 +29,14 @@
     (multislot objetivo
         (type STRING)
         (create-accessor read-write))
-    (slot repeticiones_max
+    (slot puntuacion
+        (type INTEGER)
+        (create-accessor read-write)
+        (default 0))
+    (slot repeticiones
         (type INTEGER)
         (create-accessor read-write))
-    (slot repeticiones_min
-        (type INTEGER)
-        (create-accessor read-write))
-    (slot tiempo_max
-        (type INTEGER)
-        (create-accessor read-write))
-    (slot tiempo_min
+    (slot tiempo
         (type INTEGER)
         (create-accessor read-write))
 )
@@ -56,14 +48,8 @@
     (multislot topObjectProperty
         (type INSTANCE)
         (create-accessor read-write))
-    (slot altura
-        (type INTEGER)
-        (create-accessor read-write))
     (slot edad
         (type INTEGER)
-        (create-accessor read-write))
-    (slot imc
-        (type FLOAT)
         (create-accessor read-write))
     (slot nivel_cardio
         (type INTEGER)

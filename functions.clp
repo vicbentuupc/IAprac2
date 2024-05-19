@@ -83,3 +83,115 @@
     )
     ?found
 )
+
+
+
+
+
+
+
+
+
+
+
+
+;;; Define a function to sort a list of Ejercicio instances by puntuacion in decreasing order
+; (deffunction MAIN::sort-ejercicios-by-puntuacion-decreasing ()
+;   (bind ?all-ejercicios (find-all-facts ((?e Ejercicio)) TRUE))
+;   (return (sort-by-slot-decreasing ?all-ejercicios puntuacion)))
+
+; ;;; Define a function to get the value of a slot from a fact
+; (deffunction fact-slot (?fact ?slot-name)
+;    (fact-slot-value ?fact ?slot-name))
+
+; ;;; Define a helper function to sort a list of facts by a slot in decreasing order
+; (deffunction MAIN::sort-by-slot-decreasing (?fact-list ?slot-name)
+;   (return (sort ?fact-list
+;                 (bind ?x (fact-slot ?x ?slot-name))
+;                 (bind ?y (fact-slot ?y ?slot-name))
+;                 (return (> ?x ?y)))))
+
+; (deffunction sort-by-slot-decreasing (?fact-list ?slot-name)
+;   (if (eq ?fact-list nil) then
+;     (return nil))
+;   (bind ?sorted-list (list (nth$ 1 ?fact-list)))
+;   (bind ?fact-list (rest$ ?fact-list))
+;   (while (neq ?fact-list nil) do
+;     (bind ?inserted FALSE)
+;     (bind ?current (nth$ 1 ?fact-list))
+;     (bind ?fact-list (rest$ ?fact-list))
+;     (foreach ?item ?sorted-list
+;       (if (not ?inserted)
+;         (if (> (fact-slot ?current ?slot-name) (fact-slot ?item ?slot-name)) then
+;           (bind ?sorted-list (insert$ ?current ?sorted-list (member$ ?item ?sorted-list)))
+;           (bind ?inserted TRUE))))
+;     (if (not ?inserted)
+;       (bind ?sorted-list (create$ ?sorted-list ?current))))
+;   (return ?sorted-list))
+
+
+; (defrule sort 
+;     (data $?X ?a ?b $?Y)
+;     (test (< ?b ?a))
+; =>
+;     (assert (data $?X ?b ?a $?Y)))
+
+; (defrule run-sort
+;     (data $?X)
+;     =>
+;     (while (bind ?sorted FALSE)
+;         (bind ?sorted TRUE)
+;         (foreach ?i $?X
+;             (foreach ?j $?X
+;                 (if (< (puntuacion ?j) (puntuacion ?i))
+;                     then
+;                         (bind ?sorted FALSE)
+;                         (bind ?temp ?i)
+;                         (bind ?i ?j)
+;                         (bind ?j ?temp)))))
+;     (printout t ?X crlf))
+
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; (deffunction rest (?list)
+;   (if (eq ?list nil)
+;       then
+;         nil
+;       else
+;         (return (subseq ?list 1 (length ?list)))))
+
+; (deffunction MAIN::append (?list1 ?list2)
+;   (if (eq ?list1 nil)
+;       then
+;         ?list2
+;       else
+;         (return (create$ (first ?list1) (append (rest ?list1) ?list2)))))
+
+
+; (deffunction MAIN::filter (?func ?list)
+;   (if (eq ?list nil)
+;       then
+;         nil
+;       else
+;         (progn
+;           (if (call ?func (first ?list))
+;               then
+;                 (return (create$ (first ?list) (filter ?func (rest ?list))))
+;               else
+;                 (return (filter ?func (rest ?list))))))
+; )
+
+; (deffunction MAIN::custom-sort-by (?list ?compare-func)
+;   (if (or (eq ?list nil) (eq (rest ?list) nil))
+;       then
+;         ?list
+;       else
+;         (progn
+;           (bind ?pivot (first ?list))
+;           (bind ?rest (rest ?list))
+;           (bind ?less (custom-sort-by (filter (lambda (?x) (not (?compare-func ?pivot ?x))) ?rest) ?compare-func))
+;           (bind ?greater (custom-sort-by (filter (lambda (?x) (?compare-func ?pivot ?x)) ?rest) ?compare-func))
+;           (return (append ?less (create$ ?pivot) ?greater)))))

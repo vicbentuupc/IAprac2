@@ -1,5 +1,45 @@
+
 RUN THIS COMMAND ON CLIPS IDE:
 (batch "run.clp.bat")
+
+
+
+Añadir default a score exercice
+(slot puntuacion
+        (type INTEGER)
+        (create-accessor read-write)
+        (default 0))
+
+
+
+
+
+Abstraccion:
+- sacar nivel_cardio y fuerza
+
+
+Filtros:
+- filtrar_edad victor
+- filtrar problemas
+- puntuar grupo_muscular
+- puntuar problema es_aliviado_por
+- puntuar dificultad con nivel
+
+
+Instancias: victor
+- por ejecicio: series, repeticiones y tiempo fijos
+- problemas
+
+
+Generar el output: shinto
+- horario
+
+
+
+
+
+
+
 
 
 
