@@ -143,21 +143,23 @@
 ;; Filtro total (elimina ejercios)
 
 
-; (defrule PROCESS_DATA::filter_age
-;     ?user <- (object (is-a Persona))
-;     =>
-;     (bind ?age (send ?user get-edad))
-;     (printout t ?age crlf)
-;     (foreach ?inst ?*ejercicios*
-;         (if  (< (send ?inst get-edad_max) ?age) then ;(and (slot-existp ?inst edad_max)
-;             (printout t "Delete: ")
-            
-;             ; (printout t ?inst "    " (send ?inst get-edad_max) crlf)
-;             (unmake-instance ?inst)
-;         )
-;     )
-; )
-
+(defrule PROCESS_DATA::filter_age
+    ?user <- (object (is-a Persona))
+    =>
+    (bind ?age (send ?user get-edad))
+    (printout t ?age crlf)
+    (bind ?filtered_ejercicios (create$))
+    (foreach ?inst ?*ejercicios*
+        (if (and (< (send ?inst get-edad_max) ?age) (neq (send ?inst get-edad_max) 0)) then
+            ; (printout t "Delete: ")
+            ; (printout t ?inst "    " (send ?inst get-edad_max) crlf)
+            (unmake-instance ?inst)
+        else
+            (bind ?filtered_ejercicios (create$ ?filtered_ejercicios ?inst))
+        )
+    )
+    (bind ?*ejercicios* ?filtered_ejercicios)
+)
 
 
 
@@ -335,9 +337,6 @@
             (bind ?j (+ ?j 1))
         )
         (bind ?i (+ ?i 1))
-    )
-    (foreach ?ejercicio ?*ejercicios*
-        (printout t  (send ?ejercicio get-puntuacion) crlf)
     )
     (focus SHOW_DATA)
 )
