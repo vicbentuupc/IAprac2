@@ -74,6 +74,13 @@
     (send ?user put-edad ?answer)
 )
 
+(defrule READ_DATA::read_time "Read time available per day"
+    ?user <- (object (is-a Persona))
+    =>
+    (bind ?answer (numeric_question "¿De cuantos minutos dispones al dia?" 30 120))
+    (send ?user put-tiempo_diario ?answer)
+)
+
 (defrule READ_DATA::read_weight "Read weight of user"
     ?user <- (object (is-a Persona))
     =>
@@ -88,12 +95,6 @@
     (bind ?*altura* ?answer)
 )
 
-(defrule READ_DATA::read_time "Read time available per day"
-    ?user <- (object (is-a Persona))
-    =>
-    (bind ?answer (numeric_question "¿De cuantos minutos dispones al dia?" 30 120))
-    (send ?user put-tiempo_diario ?answer)
-)
 
 (defrule READ_DATA::read_problems
     ?user <- (object (is-a Persona))
@@ -101,23 +102,14 @@
     (bind ?answer (yes_or_no_question "¿Tienes alguna lesion o problema de salud?"))
     (if ?answer
         then
-        ; (bind ?possible_problems (find-all-instances ((?inst Problema)) TRUE))
         (bind ?possible_problems (create$ DolorDeEspalda DolorDeRodilla PresionAlta DolorDeCuello DolorDeCodo PresionBaja DolorDeHombro DolorDeCadera DolorDeTobillo DolorDeMuñeca ArticulacionesRigidas))
         (bind ?response (multiple_question "¿Cual?" ?possible_problems))
 
         (bind ?answer (create$ ))
         (foreach ?inst ?response
-            ; (printout t  "***************" crlf)
-            ; (printout t ?inst crlf)
             (bind ?result (find-instance ((?instaux Problema)) (eq ?instaux (instance-name ?inst))))
             (bind ?result (nth$ 1 ?result))
-            ; (printout t ------ crlf)
-            ; (printout t ?result crlf)
-            ; (printout t (send ?result get-es_aliviado_por) crlf)
-            ; (printout t "------" crlf)
-            ; (printout t (length$ ?answer) crlf)
             (bind ?answer (insert$ ?answer (+ (length$ ?answer) 1) ?result))
-            (printout t ?answer crlf)
         )
     (send ?user put-padece ?answer)
     (assert (filter_problems))
@@ -185,8 +177,6 @@
 
 
 
-
-
 (defrule ABSTRACT_DATA::end_abstraction "Go to next step"
     (declare (salience -10))
     ?user <- (object(is-a Persona))
@@ -232,16 +222,16 @@
             (send ?to_delete delete)
         )
     )
-    (printout t "SIZE: " (length$ ?*ejercicios*) crlf)
+    ; (printout t "SIZE: " (length$ ?*ejercicios*) crlf)
     (bind ?*ejercicios* (find-all-instances ((?inst Ejercicio)) TRUE))
-    (printout t "SIZE: " (length$ ?*ejercicios*) crlf)
+    ; (printout t "SIZE: " (length$ ?*ejercicios*) crlf)
 )
 
 (defrule PROCESS_DATA::filter_age
     ?user <- (object (is-a Persona))
     =>
     (bind ?age (send ?user get-edad))
-    (printout t ?age crlf)
+    ; (printout t ?age crlf)
     (bind ?filtered_ejercicios (create$))
     (foreach ?inst ?*ejercicios*
         (if (and (< (send ?inst get-edad_max) ?age) (neq (send ?inst get-edad_max) 0)) then
@@ -332,44 +322,10 @@
     ?user <- (object (is-a Persona))
     =>
     (focus SORT)
-    ; (focus SHOW_DATA)
 )
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;; SHOW DATA MODULE ;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-; (defrule SHOW_DATA::show_results "Show the final schedule"
-;     ?user <- (object (is-a Persona))
-;     =>
-;     (printout t crlf)
-;     (bind ?i 1)
-
-
-;     (bind ?ejercicio_nth (nth$ ?i ?*ejercicios*))
-;     (bind ?nom_ejercicio (str-cat ?ejercicio_nth))
-;     (printout t "Lunes: " ?nom_ejercicio crlf)
-;     (bind ?i (+ ?i 1))
-
-;     (bind ?ejercicio_nth (nth$ ?i ?*ejercicios*))
-;     (bind ?nom_ejercicio (str-cat ?ejercicio_nth))
-;     (printout t "Martes: " ?nom_ejercicio crlf)
-;     (bind ?i (+ ?i 1))
-
-;     (bind ?ejercicio_nth (nth$ ?i ?*ejercicios*))
-;     (bind ?nom_ejercicio (str-cat ?ejercicio_nth))
-;     (printout t "Miercoles: " ?nom_ejercicio crlf)
-;     (bind ?i (+ ?i 1))
-
-;     (bind ?ejercicio_nth (nth$ ?i ?*ejercicios*))
-;     (bind ?nom_ejercicio (str-cat ?ejercicio_nth))
-;     (printout t "Jueves: " ?nom_ejercicio crlf)
-;     (bind ?i (+ ?i 1))
-
-;     (bind ?ejercicio_nth (nth$ ?i ?*ejercicios*))
-;     (bind ?nom_ejercicio (str-cat ?ejercicio_nth))
-;     (printout t "Viernes: " ?nom_ejercicio crlf)
-; )
 
 
 (defrule SHOW_DATA::show_results "Show the final schedule"
@@ -377,7 +333,7 @@
     =>
     (printout t crlf)
     (bind ?i 1)
-    (bind ?days (create$ "Lunes" "Martes" "Miercoles" "Jueves" "Viernes"))
+    (bind ?days (create$ "Lunes" "Martes" "Miercoles" "Jueves" "Viernes" "Sabado" "Domingo"))
 
     (foreach ?day ?days
         (if (<= ?i (length$ ?*ejercicios*)) then
