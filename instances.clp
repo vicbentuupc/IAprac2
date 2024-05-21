@@ -330,16 +330,6 @@
   (tiempo 8)
 )
 
-([ElevacionDeTalones] of Ejercicio
-  (nivel_fuerza 2)
-  (nivel_cardio 1)
-  (objetivo mantenimiento equilibrio)
-  (grupos_musculares cuadriceps)
-  (repeticiones 20)
-  (series 3)
-  (tiempo 6)
-)
-
 ([AbdominalesBicicleta] of Ejercicio
   (nivel_fuerza 2)
   (nivel_cardio 3)

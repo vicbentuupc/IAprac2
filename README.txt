@@ -17,7 +17,7 @@ Añadir default a score exercice
 Abstraccion:
 - sacar nivel_cardio y fuerza: shinto HECHO
    imc (peso/altura), carrera 10m, flexiones 10m, estilo de vida
-
+   
 
 Filtros:
 - puntuar dificultad con nivel shinto
