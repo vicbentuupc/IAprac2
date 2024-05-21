@@ -22,6 +22,13 @@
 #    Object Properties
 #################################################################
 
+###  http://www.semanticweb.org/vicbe/ontologies/2024/4/prac2Ontology#padece
+:padece rdf:type owl:ObjectProperty ;
+        rdfs:subPropertyOf owl:topObjectProperty ;
+        rdfs:domain :Persona ;
+        rdfs:range :Problema .
+
+
 ###  http://www.semanticweb.org/vicbe/ontologies/2024/4/prac2Ontology/combina_con
 :combina_con rdf:type owl:ObjectProperty ;
              rdfs:subPropertyOf owl:topObjectProperty ;
@@ -52,14 +59,6 @@ owl:topObjectProperty rdfs:domain :Persona ;
 #################################################################
 #    Data properties
 #################################################################
-
-###  http://www.semanticweb.org/vicbe/ontologies/2024/4/prac2Ontology#series
-:series rdf:type owl:DatatypeProperty ;
-        rdfs:subPropertyOf owl:topDataProperty ;
-        rdf:type owl:FunctionalProperty ;
-        rdfs:domain :Ejercicio ;
-        rdfs:range xsd:integer .
-
 
 ###  http://www.semanticweb.org/vicbe/ontologies/2024/4/prac2Ontology/edad
 :edad rdf:type owl:DatatypeProperty ;
@@ -124,6 +123,14 @@ owl:topObjectProperty rdfs:domain :Persona ;
               rdf:type owl:FunctionalProperty ;
               rdfs:domain :Ejercicio ;
               rdfs:range xsd:integer .
+
+
+###  http://www.semanticweb.org/vicbe/ontologies/2024/4/prac2Ontology/series
+:series rdf:type owl:DatatypeProperty ;
+        rdfs:subPropertyOf owl:topDataProperty ;
+        rdf:type owl:FunctionalProperty ;
+        rdfs:domain :Ejercicio ;
+        rdfs:range xsd:integer .
 
 
 ###  http://www.semanticweb.org/vicbe/ontologies/2024/4/prac2Ontology/tiempo

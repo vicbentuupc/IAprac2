@@ -76,6 +76,35 @@
     (send ?user put-tiempo_diario ?answer)
 )
 
+(defrule READ_DATA::read_problems
+    ?user <- (object (is-a Persona))
+    =>
+    (bind ?answer (yes_or_no_question "¿Tienes alguna lesion o problema de salud?"))
+    (if ?answer
+        then
+        ; (bind ?possible_problems (find-all-instances ((?inst Problema)) TRUE))
+        (bind ?possible_problems (create$ DolorDeEspalda DolorDeRodilla PresionAlta DolorDeCuello DolorDeCodo PresionBaja DolorDeHombro DolorDeCadera DolorDeTobillo DolorDeMuñeca ArticulacionesRigidas))
+        (bind ?response (multiple_question "¿Cual?" ?possible_problems))
+
+        (bind ?answer (create$ ))
+        (foreach ?inst ?response
+            ; (printout t  "***************" crlf)
+            ; (printout t ?inst crlf)
+            (bind ?result (find-instance ((?instaux Problema)) (eq ?instaux (instance-name ?inst))))
+            (bind ?result (nth$ 1 ?result))
+            ; (printout t ------ crlf)
+            ; (printout t ?result crlf)
+            ; (printout t (send ?result get-es_aliviado_por) crlf)
+            ; (printout t "------" crlf)
+            ; (printout t (length$ ?answer) crlf)
+            (bind ?answer (insert$ ?answer (+ (length$ ?answer) 1) ?result))
+            (printout t ?answer crlf)
+        )
+    (send ?user put-padece ?answer)
+    (assert (filter_problems))
+    )
+)
+
 (defrule READ_DATA::read_objectives "Read user objectives"
     ?user <- (object (is-a Persona))
     =>
@@ -143,6 +172,34 @@
 ;; Filtro total (elimina ejercios)
 
 
+(defrule PROCESS_DATA::filter_problems
+    (declare (salience 5))
+    ?user <- (object (is-a Persona))
+    ?hecho <- (filter_problems)
+    =>
+    (bind ?problemas (send ?user get-padece))
+    (foreach ?problem ?problemas
+        ; (printout t "---------   " ?problem crlf)
+        ; (printout t "SIZE: " (length$ ?*ejercicios*) crlf)
+        (bind ?filtered_ejercicios (send ?problem get-impide))
+        ; (printout t ?filtered_ejercicios crlf)
+        (foreach ?inst ?filtered_ejercicios
+            ; (printout t "---------   " ?inst crlf)
+            ; (printout t "preSIZE: " (length$ ?*ejercicios*) crlf)
+            ; (send ?inst delete)
+            ; (printout t "postSIZE: " (length$ ?*ejercicios*) crlf)
+            ; (bind ?*ejercicios* (delete-member$ ?*ejercicios* ?inst))
+            (bind ?to_delete (nth$ 1 (find-instance ((?instaux Ejercicio)) (eq ?instaux (instance-name ?inst)))))
+            ; (printout t "Delete: ")
+            ; (printout t ?to_delete crlf)
+            (send ?to_delete delete)
+        )
+    )
+    (printout t "SIZE: " (length$ ?*ejercicios*) crlf)
+    (bind ?*ejercicios* (find-all-instances ((?inst Ejercicio)) TRUE))
+    (printout t "SIZE: " (length$ ?*ejercicios*) crlf)
+)
+
 (defrule PROCESS_DATA::filter_age
     ?user <- (object (is-a Persona))
     =>
@@ -160,7 +217,6 @@
     )
     (bind ?*ejercicios* ?filtered_ejercicios)
 )
-
 
 
 

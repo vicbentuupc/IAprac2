@@ -26,10 +26,6 @@ Filtros:
 - puntuar dificultad con nivel
 
 
-Instancias: victor
-- por ejecicio: series, repeticiones y tiempo fijos
-- problemas
-
 
 Generar el output: shinto
 - horario
