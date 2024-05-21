@@ -79,7 +79,8 @@ owl:topObjectProperty rdfs:domain :Persona ;
 ###  http://www.semanticweb.org/vicbe/ontologies/2024/4/prac2Ontology/grupos_musculares
 :grupos_musculares rdf:type owl:DatatypeProperty ;
                    rdfs:subPropertyOf owl:topDataProperty ;
-                   rdfs:domain :Ejercicio ;
+                   rdfs:domain :Ejercicio ,
+                               :Persona ;
                    rdfs:range xsd:string .
 
 
