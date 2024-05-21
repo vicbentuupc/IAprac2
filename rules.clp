@@ -294,19 +294,9 @@
     =>
     (bind ?problemas (send ?user get-padece))
     (foreach ?problem ?problemas
-        ; (printout t "---------   " ?problem crlf)
-        ; (printout t "SIZE: " (length$ ?*ejercicios*) crlf)
         (bind ?filtered_ejercicios (send ?problem get-impide))
-        ; (printout t ?filtered_ejercicios crlf)
         (foreach ?inst ?filtered_ejercicios
-            ; (printout t "---------   " ?inst crlf)
-            ; (printout t "preSIZE: " (length$ ?*ejercicios*) crlf)
-            ; (send ?inst delete)
-            ; (printout t "postSIZE: " (length$ ?*ejercicios*) crlf)
-            ; (bind ?*ejercicios* (delete-member$ ?*ejercicios* ?inst))
             (bind ?to_delete (nth$ 1 (find-instance ((?instaux Ejercicio)) (eq ?instaux (instance-name ?inst)))))
-            ; (printout t "Delete: ")
-            ; (printout t ?to_delete crlf)
             (send ?to_delete delete)
         )
     )
@@ -317,25 +307,29 @@
 
 ;; Filtro total (elimina ejercios)
 (defrule PROCESS_DATA::filter_age
+    (declare (salience 5))
     ?user <- (object (is-a Persona))
     =>
     (bind ?age (send ?user get-edad))
-    ; (printout t ?age crlf)
     (bind ?filtered_ejercicios (create$))
     (foreach ?inst ?*ejercicios*
         (if (and (< (send ?inst get-edad_max) ?age) (neq (send ?inst get-edad_max) 0)) then
-            ; (printout t "Delete: ")
-            ; (printout t ?inst "    " (send ?inst get-edad_max) crlf)
-            (unmake-instance ?inst)
+            (send ?inst delete)
         else
             (bind ?filtered_ejercicios (create$ ?filtered_ejercicios ?inst))
         )
     )
-    (bind ?*ejercicios* ?filtered_ejercicios)
+    ; (printout t "SIZE: " (length$ ?*ejercicios*) crlf)
+    (bind ?*ejercicios* (find-all-instances ((?inst Ejercicio)) TRUE))
+    ; (printout t "SIZE: " (length$ ?*ejercicios*) crlf)
 )
 
 
-;; Filtro parcial (puntua ejercicios)
+
+
+;;;;;;;;;; Filtro parcial (puntua ejercicios)
+
+
 (defrule PROCESS_DATA::filtrar_objetivo "Recorre todos los ejercicios y filtra los que tienen objetivos en comun con user"
     ?hecho <- (filter_objectives)
     ?user <- (object (is-a Persona))
@@ -369,7 +363,6 @@
 )
 
 
-;; Filtro parcial (puntua ejercicios)
 (defrule PROCESS_DATA::filtrar_grupo_muscular "Recorre todos los ejercicios y filtra los que tienen grupo_musucular en comun con user"
     ?hecho <- (filter_muscular_group)
     ?user <- (object (is-a Persona))
@@ -484,6 +477,22 @@
         (bind ?i (+ ?i 1))
     )
     (retract ?hecho)
+)
+
+
+(defrule PROCESS_DATA::es_aliviado_por "Puntua positivamente los ejercicios que vayan bien para los problemas padecidos."
+    ?user <- (object (is-a Persona))
+    ?hecho <- (filter_problems)
+    =>
+    (bind ?problemas (send ?user get-padece))
+    (foreach ?problem ?problemas
+        (bind ?filtered_ejercicios (send ?problem get-es_aliviado_por))
+        (foreach ?inst ?filtered_ejercicios
+            (bind ?result (nth$ 1 (find-instance ((?instaux Ejercicio)) (eq ?instaux (instance-name ?inst)))))
+            (bind ?new_score (+ (send ?result get-puntuacion) 15))
+            (send ?result put-puntuacion ?new_score)
+        )
+    )    
 )
 
 

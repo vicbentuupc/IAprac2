@@ -20,10 +20,8 @@ Abstraccion:
 
 
 Filtros:
-- filtrar problemas victor
-- puntuar grupo_muscular shinto  HECHO
-- puntuar problema es_aliviado_por victor
 - puntuar dificultad con nivel shinto
+- combina_con
 
 
 
