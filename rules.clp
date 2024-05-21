@@ -1,10 +1,10 @@
 ;; Global Variables
 (defglobal ?*ejercicios* = (create$ ""))
-(defglobal ?*peso* = (create$))
-(defglobal ?*altura* = (create$))
-(defglobal ?*puntacion_carrera* = (create$))
-(defglobal ?*puntacion_flexiones* = (create$))
-(defglobal ?*puntuacion_estilo_vida* = (create$))
+(defglobal ?*peso* = 0)
+(defglobal ?*altura* = 0)
+(defglobal ?*puntuacion_carrera* = 0)
+(defglobal ?*puntuacion_flexiones* = 0)
+(defglobal ?*puntuacion_estilo_vida* = 0)
 
 ;; Modules
 (defmodule MAIN (export ?ALL))
@@ -74,13 +74,6 @@
     (send ?user put-edad ?answer)
 )
 
-(defrule READ_DATA::read_time "Read time available per day"
-    ?user <- (object (is-a Persona))
-    =>
-    (bind ?answer (numeric_question "¿De cuantos minutos dispones al dia?" 30 120))
-    (send ?user put-tiempo_diario ?answer)
-)
-
 (defrule READ_DATA::read_weight "Read weight of user"
     ?user <- (object (is-a Persona))
     =>
@@ -95,6 +88,12 @@
     (bind ?*altura* ?answer)
 )
 
+(defrule READ_DATA::read_time "Read time available per day"
+    ?user <- (object (is-a Persona))
+    =>
+    (bind ?answer (numeric_question "¿De cuantos minutos dispones al dia?" 30 120))
+    (send ?user put-tiempo_diario ?answer)
+)
 
 (defrule READ_DATA::read_problems
     ?user <- (object (is-a Persona))
@@ -148,14 +147,16 @@
     ?user <- (object (is-a Persona))
     =>
     (bind ?answer (numeric_question "Puntua como de dificil te resulta correr durante 10 minutos seguidos" 1 10))
-    (bind ?*puntacion_carrera* ?answer)
+    (bind ?*puntuacion_carrera* ?answer)
+    (assert (abs_carrera))
 )
 
 (defrule READ_DATA::read_felxiones "Read how difficult is for the user to do 10 push-ups"
     ?user <- (object (is-a Persona))
     =>
     (bind ?answer (numeric_question "Puntua como de dificil te resulta hacer 10 flexiones seguidas" 1 10))
-    (bind ?*puntacion_flexiones* ?answer)
+    (bind ?*puntuacion_flexiones* ?answer)
+    (assert (abs_flexiones))
 )
 
 (defrule READ_DATA::read_Life_style "Read how the user considerate his life style level"
@@ -175,7 +176,96 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;; ABSTRACT DATA MODULE ;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defrule ABSTRACT_DATA::abstraccion_nivel_cardio "Obtener nivel de cardio a partir de (imc,carrera,estilo_vida)"
+    ?user <- (object(is-a Persona))
+    ?hecho <- (abs_carrera)
+    =>
+    
 
+    ;;;Cuanta mas alta es la puntuacion de dificultad, menor es el nivel de la persona
+    (if (<= ?*puntuacion_carrera* 2) then (send ?user put-nivel_cardio 5)
+     else (if (<= ?*puntuacion_carrera* 4) then (send ?user put-nivel_cardio 4)
+           else (if (<= ?*puntuacion_carrera* 6) then (send ?user put-nivel_cardio 3)
+                else (if (<= ?*puntuacion_carrera* 8) then (send ?user put-nivel_cardio 2)
+                    else  (send ?user put-nivel_cardio 1)
+                    )
+                )
+           )
+    )
+
+    ;;;restamos 1 punto en el nivel de cardio si no esta habituado a la actividad;;;
+    (bind ?nivel_actual (send ?user get-nivel_cardio))
+    (if (<= ?*puntuacion_estilo_vida* 5) then 
+        (if (> ?nivel_actual 1) then (bind ?nivel_actual (- ?nivel_actual 1)))
+        (send ?user put-nivel_cardio ?nivel_actual)
+    )
+
+    ;;;restamos otro punto mas en el nivel de cardio si esta en baja forma;;;
+    (bind ?nivel_actual (send ?user get-nivel_cardio))
+    (if (<= ?*puntuacion_estilo_vida* 2) then 
+        (if (> ?nivel_actual 1) then (bind ?nivel_actual (- ?nivel_actual 1)))
+        (send ?user put-nivel_cardio ?nivel_actual)
+    )
+
+    ;;;sumamos un 1 punto en el nivel de cardio en el caso de que sea muy activo a diario;;;
+    (bind ?nivel_actual (send ?user get-nivel_cardio))
+    (if (>= ?*puntuacion_estilo_vida* 9) then 
+        (if (< ?nivel_actual 5) then (bind ?nivel_actual (+ ?nivel_actual 1)))
+        (send ?user put-nivel_cardio ?nivel_actual)
+    )
+
+    ;;;Si su imc es mayor a 25, inidica que tiene sobrepeso, restamos 1 punto;;;
+    (bind ?altura_metros (/ ?*altura* 100))
+    (bind ?imc (/ ?*peso* (* ?altura_metros ?altura_metros)))
+    (if (>= ?imc 25.0) then 
+        (if (> ?nivel_actual 1) then (bind ?nivel_actual (- ?nivel_actual 1)))
+        (send ?user put-nivel_cardio ?nivel_actual)
+    )
+
+    (assert (filter_cardio))
+    (retract ?hecho)
+)
+
+
+(defrule ABSTRACT_DATA::abstraccion_nivel_fuerza "Obtener nivel de fuerza a partir de (flexiones,estilo_vida)"
+    ?user <- (object(is-a Persona))
+    ?hecho <- (abs_flexiones)
+    =>
+    ;;;Cuanta mas alta es la puntuacion de dificultad, menor es el nivel de la persona
+    (if (<= ?*puntuacion_flexiones* 2) then (send ?user put-nivel_fuerza 5)
+     else (if (<= ?*puntuacion_flexiones* 4) then (send ?user put-nivel_fuerza 4)
+           else (if (<= ?*puntuacion_flexiones* 6) then (send ?user put-nivel_fuerza 3)
+                else (if (<= ?*puntuacion_flexiones* 8) then (send ?user put-nivel_fuerza 2)
+                    else  (send ?user put-nivel_fuerza 1)
+                    )
+                )
+           )
+    )
+    
+    ;;;restamos 1 punto en el nivel de fuerza si no esta habituado a la actividad;;;
+    (bind ?nivel_actual (send ?user get-nivel_fuerza))
+    (if (<= ?*puntuacion_estilo_vida* 5) then 
+        (if (> ?nivel_actual 1) then (bind ?nivel_actual (- ?nivel_actual 1)))
+        (send ?user put-nivel_fuerza ?nivel_actual)
+    )
+
+    ;;;restamos otro punto mas en el nivel de fuerza si esta en baja forma;;;
+    (bind ?nivel_actual (send ?user get-nivel_fuerza))
+    (if (<= ?*puntuacion_estilo_vida* 2) then 
+        (if (> ?nivel_actual 1) then (bind ?nivel_actual (- ?nivel_actual 1)))
+        (send ?user put-nivel_fuerza ?nivel_actual)
+    )
+
+    ;;;sumamos un 1 punto en el nivel de fuerza en el caso de que sea muy activo a diario;;;
+    (bind ?nivel_actual (send ?user get-nivel_fuerza))
+    (if (>= ?*puntuacion_estilo_vida* 9) then 
+        (if (< ?nivel_actual 5) then (bind ?nivel_actual (+ ?nivel_actual 1)))
+        (send ?user put-nivel_fuerza ?nivel_actual)
+    )
+
+    (assert (filter_fuerza))
+    (retract ?hecho)
+)
 
 (defrule ABSTRACT_DATA::end_abstraction "Go to next step"
     (declare (salience -10))
@@ -197,8 +287,6 @@
 
 
 ;; Filtro total (elimina ejercios)
-
-
 (defrule PROCESS_DATA::filter_problems
     (declare (salience 5))
     ?user <- (object (is-a Persona))
@@ -227,6 +315,7 @@
     ; (printout t "SIZE: " (length$ ?*ejercicios*) crlf)
 )
 
+;; Filtro total (elimina ejercios)
 (defrule PROCESS_DATA::filter_age
     ?user <- (object (is-a Persona))
     =>
@@ -244,9 +333,6 @@
     )
     (bind ?*ejercicios* ?filtered_ejercicios)
 )
-
-
-
 
 
 ;; Filtro parcial (puntua ejercicios)
@@ -312,7 +398,91 @@
 
         (bind ?i (+ ?i 1))
     )
+    (retract ?hecho)
+)
 
+;; Filtro parcial (puntua ejercicios)
+(defrule PROCESS_DATA::filtrar_nivel_cardio "Recorre todos los ejercicios y filtra los que tiene nivel_cardio en comun con user"
+    ?hecho <- (filter_cardio)
+    ?user <- (object (is-a Persona))
+    =>
+    (bind ?i 1)
+    (bind ?nv_cardio_user (send ?user get-nivel_cardio))
+        
+    (printout t "nivel_cardio:" ?nv_cardio_user crlf) 
+
+    (while (<= ?i (length$ ?*ejercicios*)) do
+        (bind ?ejercicio_nth (nth$ ?i ?*ejercicios*))
+        (bind ?nv_cardio_ejer (send ?ejercicio_nth get-nivel_cardio))
+
+        ;;;solo cuando el nivel del usuario es mayor al del ejercicio, lo puntuamos positiviamente
+        ;;;Cuanto mas diferente sean los niveles, menor es la puntacion añadida (10 - diff*2)
+        (if (>= ?nv_cardio_user ?nv_cardio_ejer) then   
+            (bind ?current_score (send ?ejercicio_nth get-puntuacion))
+            (if (not (integerp ?current_score)) then
+                (bind ?current_score 0))
+            (bind ?diff (- ?nv_cardio_user ?nv_cardio_ejer))
+            (bind ?add_score (- 10 (* ?diff 2)))
+            (bind ?new_score (+ ?current_score ?add_score))
+            (send ?ejercicio_nth put-puntuacion ?new_score)
+
+        ;;;En el caso de que el nivel del ejercicio sea mayor, restamos puntacion
+        ;;;Cuanto mas diferente sean los niveles, mayor es la puntacion añadida (diff*2)
+        else
+            (bind ?current_score (send ?ejercicio_nth get-puntuacion))
+            (if (not (integerp ?current_score)) then
+                (bind ?current_score 0))
+            (bind ?diff (- ?nv_cardio_ejer ?nv_cardio_user))
+            (bind ?add_score (* ?diff 2))
+            (bind ?new_score (- ?current_score ?add_score))
+            (send ?ejercicio_nth put-puntuacion ?new_score)
+        )
+
+        (bind ?i (+ ?i 1))
+    )
+    (retract ?hecho)
+)
+
+
+;; Filtro parcial (puntua ejercicios)
+(defrule PROCESS_DATA::filtrar_nivel_fuerza "Recorre todos los ejercicios y filtra los que tiene nivel_fuerza en comun con user"
+    ?hecho <- (filter_fuerza)
+    ?user <- (object (is-a Persona))
+    =>
+    (bind ?i 1)
+    (bind ?nv_fuerza_user (send ?user get-nivel_fuerza))
+
+    (printout t "nivel_fuerza:" ?nv_fuerza_user crlf) 
+
+    (while (<= ?i (length$ ?*ejercicios*)) do
+        (bind ?ejercicio_nth (nth$ ?i ?*ejercicios*))
+        (bind ?nv_fuerza_ejer (send ?ejercicio_nth get-nivel_fuerza))
+
+        ;;;Cuanto mas diferente sean los niveles, menor es la puntacion añadida (10 - diff*2)
+        (if (>= ?nv_fuerza_user ?nv_fuerza_ejer) then   
+            (bind ?current_score (send ?ejercicio_nth get-puntuacion))
+            (if (not (integerp ?current_score)) then
+                (bind ?current_score 0))
+            (bind ?diff (- ?nv_fuerza_user ?nv_fuerza_ejer))
+            (bind ?add_score (- 10 (* ?diff 2)))
+            (bind ?new_score (+ ?current_score ?add_score))
+            (send ?ejercicio_nth put-puntuacion ?new_score)
+
+        ;;;En el caso de que el nivel del ejercicio sea mayor, restamos puntacion
+        ;;;Cuanto mas diferente sean los niveles, mayor es la puntacion añadida (diff*2)
+        else
+            (bind ?current_score (send ?ejercicio_nth get-puntuacion))
+            (if (not (integerp ?current_score)) then
+                (bind ?current_score 0))
+            (bind ?diff (- ?nv_fuerza_ejer ?nv_fuerza_user))
+            (bind ?add_score (* ?diff 2))
+            (bind ?new_score (- ?current_score ?add_score))
+            (send ?ejercicio_nth put-puntuacion ?new_score)
+        )
+        
+
+        (bind ?i (+ ?i 1))
+    )
     (retract ?hecho)
 )
 

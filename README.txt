@@ -15,8 +15,8 @@ Añadir default a score exercice
 
 
 Abstraccion:
-- sacar nivel_cardio y fuerza: shinto
-   edad, imc (peso/altura), carrera sostenida, minutos caminados_dia
+- sacar nivel_cardio y fuerza: shinto HECHO
+   imc (peso/altura), carrera 10m, flexiones 10m, estilo de vida
 
 
 Filtros:
@@ -30,13 +30,6 @@ Filtros:
 Generar el output: shinto
 - horario
 
-
-
-//SHINTO, preguntarle a Victor:
-hay 2 opciones, que la clase persona, contenga toda la informacion que se recoja de las Preguntas
-y crear variables globales para el valor de la abstraccion. (como lo tiene Jianing)
-O bien, que la clase persona contenga el valor de la abstraccion, y que se guarde la informacion de las Preguntas
-en variables globales. (Como lo tenemos nosotros)
 
 
 

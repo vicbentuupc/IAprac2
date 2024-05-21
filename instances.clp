@@ -3,7 +3,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;; Ejercicios ;;;;;;;;;;;;;;;;;;;;;;
 
-
 ([FlexionesDePecho] of Ejercicio
   (nivel_fuerza 3)
   (nivel_cardio 2)
@@ -757,8 +756,6 @@
   (series 4)
   (tiempo 12)
 )
-
-
 
 ;;;;;;;;;;;;;;;;;;;;;; Problemas ;;;;;;;;;;;;;;;;;;;;;;
 

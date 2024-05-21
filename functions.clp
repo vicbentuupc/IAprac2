@@ -27,7 +27,7 @@
     (printout t "Introduce un numero entre: [" ?rangeini ", " ?rangeend"]" crlf)
     (bind ?answer (read))
     (while (or (not (integerp ?answer)) (not(and(>= ?answer ?rangeini)(<= ?answer ?rangeend)))) do
-        (printout t "Valor no válido, prueba otra vez." crlf)
+        (printout t "Valor no valido, prueba otra vez." crlf)
         (bind ?answer (read))
     )
     (printout t crlf)
