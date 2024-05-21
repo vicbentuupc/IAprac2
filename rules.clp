@@ -328,8 +328,6 @@
 
 
 ;;;;;;;;;; Filtro parcial (puntua ejercicios)
-
-
 (defrule PROCESS_DATA::filtrar_objetivo "Recorre todos los ejercicios y filtra los que tienen objetivos en comun con user"
     ?hecho <- (filter_objectives)
     ?user <- (object (is-a Persona))
@@ -352,7 +350,7 @@
             (bind ?current_score (send ?ejercicio_nth get-puntuacion))
             (if (not (integerp ?current_score)) then
                 (bind ?current_score 0))
-            (bind ?new_score (+ ?current_score (* ?shared_count 10)))
+            (bind ?new_score (+ ?current_score (* ?shared_count 20)))
             (send ?ejercicio_nth put-puntuacion ?new_score)
         )
 
@@ -385,7 +383,7 @@
             (bind ?current_score (send ?ejercicio_nth get-puntuacion))
             (if (not (integerp ?current_score)) then
                 (bind ?current_score 0))
-            (bind ?new_score (+ ?current_score (* ?shared_count 10)))
+            (bind ?new_score (+ ?current_score (* ?shared_count 25)))
             (send ?ejercicio_nth put-puntuacion ?new_score)
         )
 
@@ -401,8 +399,6 @@
     =>
     (bind ?i 1)
     (bind ?nv_cardio_user (send ?user get-nivel_cardio))
-        
-    (printout t "nivel_cardio:" ?nv_cardio_user crlf) 
 
     (while (<= ?i (length$ ?*ejercicios*)) do
         (bind ?ejercicio_nth (nth$ ?i ?*ejercicios*))
@@ -444,8 +440,6 @@
     =>
     (bind ?i 1)
     (bind ?nv_fuerza_user (send ?user get-nivel_fuerza))
-
-    (printout t "nivel_fuerza:" ?nv_fuerza_user crlf) 
 
     (while (<= ?i (length$ ?*ejercicios*)) do
         (bind ?ejercicio_nth (nth$ ?i ?*ejercicios*))
@@ -489,7 +483,7 @@
         (bind ?filtered_ejercicios (send ?problem get-es_aliviado_por))
         (foreach ?inst ?filtered_ejercicios
             (bind ?result (nth$ 1 (find-instance ((?instaux Ejercicio)) (eq ?instaux (instance-name ?inst)))))
-            (bind ?new_score (+ (send ?result get-puntuacion) 15))
+            (bind ?new_score (+ (send ?result get-puntuacion) 40))
             (send ?result put-puntuacion ?new_score)
         )
     )    
@@ -510,20 +504,98 @@
 (defrule SHOW_DATA::show_results "Show the final schedule"
     ?user <- (object (is-a Persona))
     =>
-    (printout t crlf)
-    (bind ?i 1)
-    (bind ?days (create$ "Lunes" "Martes" "Miercoles" "Jueves" "Viernes" "Sabado" "Domingo"))
 
-    (foreach ?day ?days
-        (if (<= ?i (length$ ?*ejercicios*)) then
+    ;;;CREAR LISTAS;;;
+    (bind ?Lunes (create$))
+    (bind ?Martes (create$))
+    (bind ?Miercoles (create$))
+    (bind ?Jueves (create$))
+    (bind ?Viernes (create$))
+
+    (bind ?Lunes_tiempo (send ?user get-tiempo_diario))
+    (bind ?Martes_tiempo (send ?user get-tiempo_diario))
+    (bind ?Miercoles_tiempo (send ?user get-tiempo_diario))
+    (bind ?Jueves_tiempo (send ?user get-tiempo_diario))
+    (bind ?Viernes_tiempo (send ?user get-tiempo_diario))
+
+    (bind ?i 1)
+    (bind ?seguir TRUE)
+
+    (while ?seguir do
+        (bind ?seguir FALSE) ; Asumimos que terminaremos el bucle, a menos que se añada un ejercicio
+
+        ; Intentar añadir ejercicio a Lunes
+        (if (<= (send (nth$ ?i ?*ejercicios*) get-tiempo) ?Lunes_tiempo) then
             (bind ?ejercicio_nth (nth$ ?i ?*ejercicios*))
-            (bind ?nombre_ejercicio (str-cat ?ejercicio_nth))
-            (printout t ?day ": " ?nombre_ejercicio crlf)
+            (bind ?Lunes (create$ ?Lunes ?ejercicio_nth))
+            (bind ?Lunes_tiempo (- ?Lunes_tiempo (send ?ejercicio_nth get-tiempo)))
+            (bind ?seguir TRUE)
             (bind ?i (+ ?i 1))
-        else
-            (printout t ?day ": " "No exercise assigned" crlf)
+        )
+
+        ; Intentar añadir ejercicio a Martes
+        (if (<= (send (nth$ ?i ?*ejercicios*) get-tiempo) ?Martes_tiempo) then
+            (bind ?ejercicio_nth (nth$ ?i ?*ejercicios*))
+            (bind ?Martes (create$ ?Martes ?ejercicio_nth))
+            (bind ?Martes_tiempo (- ?Martes_tiempo (send ?ejercicio_nth get-tiempo)))
+            (bind ?seguir TRUE)
+            (bind ?i (+ ?i 1))
+        )
+
+        ; Intentar añadir ejercicio a Miercoles
+        (if (<= (send (nth$ ?i ?*ejercicios*) get-tiempo) ?Miercoles_tiempo) then
+            (bind ?ejercicio_nth (nth$ ?i ?*ejercicios*))
+            (bind ?Miercoles (create$ ?Miercoles ?ejercicio_nth))
+            (bind ?Miercoles_tiempo (- ?Miercoles_tiempo (send ?ejercicio_nth get-tiempo)))
+            (bind ?seguir TRUE)
+            (bind ?i (+ ?i 1))
+        )
+
+        ; Intentar añadir ejercicio a Jueves
+        (if (<= (send (nth$ ?i ?*ejercicios*) get-tiempo) ?Jueves_tiempo) then
+            (bind ?ejercicio_nth (nth$ ?i ?*ejercicios*))
+            (bind ?Jueves (create$ ?Jueves ?ejercicio_nth))
+            (bind ?Jueves_tiempo (- ?Jueves_tiempo (send ?ejercicio_nth get-tiempo)))
+            (bind ?seguir TRUE)
+            (bind ?i (+ ?i 1))
+        )
+
+        ; Intentar añadir ejercicio a Viernes
+        (if (<= (send (nth$ ?i ?*ejercicios*) get-tiempo) ?Viernes_tiempo) then
+            (bind ?ejercicio_nth (nth$ ?i ?*ejercicios*))
+            (bind ?Viernes (create$ ?Viernes ?ejercicio_nth))
+            (bind ?Viernes_tiempo (- ?Viernes_tiempo (send ?ejercicio_nth get-tiempo)))
+            (bind ?seguir TRUE)
+            (bind ?i (+ ?i 1))
+        )
+
+        ; Si llegamos al final de la lista de ejercicios, reiniciamos el índice
+        (if (>= ?i (length$ ?*ejercicios*)) then
+            (bind ?i 1)
         )
     )
+
+    ;;;PRINT;;;
+
+    (printout t crlf)
+    (printout t "Esta es la rutina que se te recomienda:" crlf)
+    (printout t crlf)
+
+    (printout t "Lunes:" crlf)
+    (Print_lista ?Lunes)
+
+    (printout t "Martes: "crlf)
+    (Print_lista ?Martes)
+
+    (printout t "Miercoles: "crlf)
+    (Print_lista ?Miercoles)
+
+    (printout t "Jueves: "crlf)
+    (Print_lista ?Jueves)
+
+    (printout t "Viernes: "crlf)
+    (Print_lista ?Viernes)
+    
 )
 
 

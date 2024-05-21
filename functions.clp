@@ -90,6 +90,25 @@
     ?found
 )
 
+(deffunction MAIN::Print_lista (?lista)
+    (bind ?total_tiempo 0)
+    ; Iterar sobre cada instancia en la lista
+    (foreach ?ejercicio ?lista
+        ; Sumar el tiempo total de la sesión
+        (bind ?total_tiempo (+ ?total_tiempo (send ?ejercicio get-tiempo)))
+    )
+
+    ; Imprimir el tiempo total de la sesión
+    (printout t "    " "(Tiempo total de la sesion: " ?total_tiempo "m)" crlf)
+
+    ; Imprimir los detalles de cada ejercicio
+    (foreach ?ejercicio ?lista
+        (printout t "    " "- " (str-cat ?ejercicio) crlf)
+        (printout t "    " "  " (send ?ejercicio get-series) " series de " (send ?ejercicio get-repeticiones) " repeticiones" crlf)
+        (printout t "    " "  Duracion: " (send ?ejercicio get-tiempo) "m" crlf crlf)
+    )
+)
+
 
 
 
@@ -201,3 +220,5 @@
 ;           (bind ?less (custom-sort-by (filter (lambda (?x) (not (?compare-func ?pivot ?x))) ?rest) ?compare-func))
 ;           (bind ?greater (custom-sort-by (filter (lambda (?x) (?compare-func ?pivot ?x)) ?rest) ?compare-func))
 ;           (return (append ?less (create$ ?pivot) ?greater)))))
+
+
