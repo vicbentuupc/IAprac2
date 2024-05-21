@@ -48,7 +48,7 @@
         (lowcase ?var)
     )
     (printout t ?question crlf)
-    (printout t "Introduce tantos como quieras de los siguientes valores, separados por espacio en una sola línea:" crlf (implode$ ?values) crlf)
+    (printout t "Introduce tantos como quieras de los siguientes valores, separados por espacio en una sola linea:" crlf (implode$ ?values) crlf)
     (bind ?answer (readline))
     (bind ?res (explode$ ?answer))
     (bind ?invalidValue FALSE)

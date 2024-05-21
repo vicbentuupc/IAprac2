@@ -53,14 +53,6 @@ owl:topObjectProperty rdfs:domain :Persona ;
 #    Data properties
 #################################################################
 
-###  http://www.semanticweb.org/vicbe/ontologies/2024/4/prac2Ontology#series
-:series rdf:type owl:DatatypeProperty ;
-        rdfs:subPropertyOf owl:topDataProperty ;
-        rdf:type owl:FunctionalProperty ;
-        rdfs:domain :Ejercicio ;
-        rdfs:range xsd:integer .
-
-
 ###  http://www.semanticweb.org/vicbe/ontologies/2024/4/prac2Ontology/edad
 :edad rdf:type owl:DatatypeProperty ;
       rdfs:subPropertyOf owl:topDataProperty ;
@@ -80,7 +72,8 @@ owl:topObjectProperty rdfs:domain :Persona ;
 ###  http://www.semanticweb.org/vicbe/ontologies/2024/4/prac2Ontology/grupos_musculares
 :grupos_musculares rdf:type owl:DatatypeProperty ;
                    rdfs:subPropertyOf owl:topDataProperty ;
-                   rdfs:domain :Ejercicio ;
+                   rdfs:domain :Ejercicio ,
+                               :Persona ;
                    rdfs:range xsd:string .
 
 
@@ -124,6 +117,14 @@ owl:topObjectProperty rdfs:domain :Persona ;
               rdf:type owl:FunctionalProperty ;
               rdfs:domain :Ejercicio ;
               rdfs:range xsd:integer .
+
+
+###  http://www.semanticweb.org/vicbe/ontologies/2024/4/prac2Ontology/series
+:series rdf:type owl:DatatypeProperty ;
+        rdfs:subPropertyOf owl:topDataProperty ;
+        rdf:type owl:FunctionalProperty ;
+        rdfs:domain :Ejercicio ;
+        rdfs:range xsd:integer .
 
 
 ###  http://www.semanticweb.org/vicbe/ontologies/2024/4/prac2Ontology/tiempo

@@ -1,5 +1,10 @@
 ;; Global Variables
 (defglobal ?*ejercicios* = (create$ ""))
+(defglobal ?*peso* = (create$))
+(defglobal ?*altura* = (create$))
+(defglobal ?*puntacion_carrera* = (create$))
+(defglobal ?*puntacion_flexiones* = (create$))
+(defglobal ?*puntuacion_estilo_vida* = (create$))
 
 ;; Modules
 (defmodule MAIN (export ?ALL))
@@ -65,8 +70,22 @@
 (defrule READ_DATA::read_age "Read age of user"
     ?user <- (object (is-a Persona))
     =>
-    (bind ?answer (numeric_question "Cuantos años tienes?" 18 100))
+    (bind ?answer (numeric_question "¿Que edad tienes?" 18 100))
     (send ?user put-edad ?answer)
+)
+
+(defrule READ_DATA::read_weight "Read weight of user"
+    ?user <- (object (is-a Persona))
+    =>
+    (bind ?answer (numeric_question "¿Cuanto pesas aproximadamente(kg)?" 10 100))
+    (bind ?*peso* ?answer)
+)
+
+(defrule READ_DATA::read_height "Read height of user"
+    ?user <- (object (is-a Persona))
+    =>
+    (bind ?answer (numeric_question "¿Cuanto mides aproximadamente(cm)?" 10 300))
+    (bind ?*altura* ?answer)
 )
 
 (defrule READ_DATA::read_time "Read time available per day"
@@ -89,6 +108,42 @@
     )
 )
 
+(defrule READ_DATA::read_muscular_group "Read user muscular group objectives"
+    ?user <- (object (is-a Persona))
+    =>
+    (bind ?has_answer (yes_or_no_question "¿Quieres trabajar algun grupo musucular en concreto?"))
+    (if ?has_answer
+        then
+        (bind ?possible_objectives (create$ pectorales biceps triceps abdomen hombros espalda cuadriceps gluteos isquiotibiales))
+        (bind ?answer (multiple_question "¿Que grupo muscular quieres trabajar?" ?possible_objectives))
+        (send ?user put-grupos_musculares ?answer)
+        (assert (filter_muscular_group))
+    )
+)
+
+;;;Preguntas para la extraccion de nivel;;;
+
+(defrule READ_DATA::read_carrera_sos "Read how difficult is for the user to run 10m"
+    ?user <- (object (is-a Persona))
+    =>
+    (bind ?answer (numeric_question "Puntua como de dificil te resulta correr durante 10 minutos seguidos" 1 10))
+    (bind ?*puntacion_carrera* ?answer)
+)
+
+(defrule READ_DATA::read_felxiones "Read how difficult is for the user to do 10 push-ups"
+    ?user <- (object (is-a Persona))
+    =>
+    (bind ?answer (numeric_question "Puntua como de dificil te resulta hacer 10 flexiones seguidas" 1 10))
+    (bind ?*puntacion_flexiones* ?answer)
+)
+
+(defrule READ_DATA::read_Life_style "Read how the user considerate his life style level"
+    ?user <- (object (is-a Persona))
+    =>
+    (bind ?answer (numeric_question "¿Como de activo consideras tu estilo de vida?" 1 10))
+    (bind ?*puntuacion_estilo_vida* ?answer)
+)
+
 (defrule READ_DATA::end_reading "Go to next step"
     (declare (salience -10))
     =>
@@ -97,26 +152,7 @@
 )
 
 
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;; ABSTRACT DATA MODULE ;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;(defrule ABSTRACT_DATA::abstract_time_available)
-
-
-
-
-
-
-;;;algunos inputs van directamente al Process module, y algunos inputs tienen que pasar por el abstract module antes
-
-
-
-
-
-
-
-
 
 
 
@@ -130,8 +166,8 @@
 )
 
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;; PROCESS DATA MODULE ;;;;;;;;;;;;;;;;;;;;;;;;;
+
 
 (defrule PROCESS_DATA::init_process "Start process data"
     (declare (salience 10))
@@ -140,9 +176,8 @@
     (bind ?*ejercicios* (find-all-instances ((?inst Ejercicio)) TRUE))
 )
 
+
 ;; Filtro total (elimina ejercios)
-
-
 (defrule PROCESS_DATA::filter_age
     ?user <- (object (is-a Persona))
     =>
@@ -162,13 +197,8 @@
 )
 
 
-
-
-
-
 ;; Filtro parcial (puntua ejercicios)
-
-(defrule PROCESS_DATA::filtrar_objetivo "Recorre todos los ejercicios y filtra los si tienen objetivos en comun con user"
+(defrule PROCESS_DATA::filtrar_objetivo "Recorre todos los ejercicios y filtra los que tienen objetivos en comun con user"
     ?hecho <- (filter_objectives)
     ?user <- (object (is-a Persona))
     =>
@@ -201,24 +231,38 @@
 )
 
 
+;; Filtro parcial (puntua ejercicios)
+(defrule PROCESS_DATA::filtrar_grupo_muscular "Recorre todos los ejercicios y filtra los que tienen grupo_musucular en comun con user"
+    ?hecho <- (filter_muscular_group)
+    ?user <- (object (is-a Persona))
+    =>
+    (bind ?i 1)
+    (bind ?objetivos_escogidos (send ?user get-grupos_musculares))
 
+    (while (<= ?i (length$ ?*ejercicios*)) do
+        (bind ?ejercicio_nth (nth$ ?i ?*ejercicios*))
+        (bind ?obj_ejercicio (send ?ejercicio_nth get-grupos_musculares))
+        (bind ?shared_count 0)
+        
+        (foreach ?obj ?obj_ejercicio
+            (if (member$ ?obj ?objetivos_escogidos) then
+                (bind ?shared_count (+ ?shared_count 1))
+            )
+        )
 
+        (if (> ?shared_count 0) then
+            (bind ?current_score (send ?ejercicio_nth get-puntuacion))
+            (if (not (integerp ?current_score)) then
+                (bind ?current_score 0))
+            (bind ?new_score (+ ?current_score (* ?shared_count 10)))
+            (send ?ejercicio_nth put-puntuacion ?new_score)
+        )
 
+        (bind ?i (+ ?i 1))
+    )
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    (retract ?hecho)
+)
 
 
 (defrule PROCESS_DATA::end_process "End processing and show results"
@@ -284,38 +328,6 @@
         )
     )
 )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;; SORT MODULE ;;;;;;;;;;;;;;;;;;;;;;;;;

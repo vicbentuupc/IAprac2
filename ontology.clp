@@ -60,6 +60,9 @@
     (multislot objetivo
         (type STRING)
         (create-accessor read-write))
+    (multislot grupos_musculares
+        (type STRING)
+        (create-accessor read-write))
     (slot tiempo_diario
         (type INTEGER)
         (create-accessor read-write))
