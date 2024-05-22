@@ -22,13 +22,6 @@
 #    Object Properties
 #################################################################
 
-###  http://www.semanticweb.org/vicbe/ontologies/2024/4/prac2Ontology#padece
-:padece rdf:type owl:ObjectProperty ;
-        rdfs:subPropertyOf owl:topObjectProperty ;
-        rdfs:domain :Persona ;
-        rdfs:range :Problema .
-
-
 ###  http://www.semanticweb.org/vicbe/ontologies/2024/4/prac2Ontology/combina_con
 :combina_con rdf:type owl:ObjectProperty ;
              rdfs:subPropertyOf owl:topObjectProperty ;
@@ -51,9 +44,11 @@
         rdfs:range :Ejercicio .
 
 
-###  http://www.w3.org/2002/07/owl#topObjectProperty
-owl:topObjectProperty rdfs:domain :Persona ;
-                      rdfs:range :Problema .
+###  http://www.semanticweb.org/vicbe/ontologies/2024/4/prac2Ontology/padece
+:padece rdf:type owl:ObjectProperty ;
+        rdfs:subPropertyOf owl:topObjectProperty ;
+        rdfs:domain :Persona ;
+        rdfs:range :Problema .
 
 
 #################################################################

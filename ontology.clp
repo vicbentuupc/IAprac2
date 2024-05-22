@@ -2,7 +2,7 @@
 ;;; ontology.clp
 ;;; Translated by owl2clips
 ;;; Translated to CLIPS from ontology .\ontology.ttl
-;;; :Date 21/05/2024 09:59:28
+;;; :Date 22/05/2024 22:16:44
 
 (defclass Ejercicio
     (is-a USER)
@@ -48,11 +48,11 @@
     (multislot padece
         (type INSTANCE)
         (create-accessor read-write))
-    (multislot topObjectProperty
-        (type INSTANCE)
-        (create-accessor read-write))
     (slot edad
         (type INTEGER)
+        (create-accessor read-write))
+    (multislot grupos_musculares
+        (type STRING)
         (create-accessor read-write))
     (slot nivel_cardio
         (type INTEGER)
@@ -61,9 +61,6 @@
         (type INTEGER)
         (create-accessor read-write))
     (multislot objetivo
-        (type STRING)
-        (create-accessor read-write))
-    (multislot grupos_musculares
         (type STRING)
         (create-accessor read-write))
     (slot tiempo_diario
