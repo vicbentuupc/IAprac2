@@ -757,7 +757,7 @@
 
 ([DolorDeRodilla] of Problema
   (es_aliviado_por ElevacionDePiernas BurroKick PlanchaConRotacion HipThrust)
-  (impide SentadillasConSalto SaltosDeCaja ZancadasConPeso DesplantesConMancuernas StepUps Sprints SaltosDeTijera SentadillasSumo)
+  (impide SentadillasConSalto SaltosDeCaja ZancadasConPeso DesplantesConMancuernas StepUps Sprints SaltosEnTijera SentadillasSumo)
 )
 
 ([PresionAlta] of Problema
@@ -797,7 +797,7 @@
 
 ([DolorDeTobillo] of Problema
   (es_aliviado_por ElevacionesDeTalones StepUps PlanchaConRotacion)
-  (impide Sprints SaltosDeTijera SaltosLaterales SaltosDeCaja)
+  (impide Sprints SaltosEnTijera SaltosLaterales SaltosDeCaja)
 )
 
 ([DolorDeMuñeca] of Problema

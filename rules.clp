@@ -1,5 +1,7 @@
 ;; Global Variables
 (defglobal ?*ejercicios* = (create$ ""))
+(defglobal ?*deleted_ejercicios* = (create$ ""))
+
 (defglobal ?*peso* = 0)
 (defglobal ?*altura* = 0)
 (defglobal ?*puntuacion_carrera* = 0)
@@ -143,28 +145,28 @@
 
 ;;;Preguntas para la extraccion de nivel;;;
 
-(defrule READ_DATA::read_carrera_sos "Read how difficult is for the user to run 10m"
-    ?user <- (object (is-a Persona))
-    =>
-    (bind ?answer (numeric_question "Puntua como de dificil te resulta correr durante 10 minutos seguidos" 1 10))
-    (bind ?*puntuacion_carrera* ?answer)
-    (assert (abs_carrera))
-)
+; (defrule READ_DATA::read_carrera_sos "Read how difficult is for the user to run 10m"
+;     ?user <- (object (is-a Persona))
+;     =>
+;     (bind ?answer (numeric_question "Puntua como de dificil te resulta correr durante 10 minutos seguidos" 1 10))
+;     (bind ?*puntuacion_carrera* ?answer)
+;     (assert (abs_carrera))
+; )
 
-(defrule READ_DATA::read_felxiones "Read how difficult is for the user to do 10 push-ups"
-    ?user <- (object (is-a Persona))
-    =>
-    (bind ?answer (numeric_question "Puntua como de dificil te resulta hacer 10 flexiones seguidas" 1 10))
-    (bind ?*puntuacion_flexiones* ?answer)
-    (assert (abs_flexiones))
-)
+; (defrule READ_DATA::read_felxiones "Read how difficult is for the user to do 10 push-ups"
+;     ?user <- (object (is-a Persona))
+;     =>
+;     (bind ?answer (numeric_question "Puntua como de dificil te resulta hacer 10 flexiones seguidas" 1 10))
+;     (bind ?*puntuacion_flexiones* ?answer)
+;     (assert (abs_flexiones))
+; )
 
-(defrule READ_DATA::read_Life_style "Read how the user considerate his life style level"
-    ?user <- (object (is-a Persona))
-    =>
-    (bind ?answer (numeric_question "¿Como de activo consideras tu estilo de vida?" 1 10))
-    (bind ?*puntuacion_estilo_vida* ?answer)
-)
+; (defrule READ_DATA::read_Life_style "Read how the user considerate his life style level"
+;     ?user <- (object (is-a Persona))
+;     =>
+;     (bind ?answer (numeric_question "¿Como de activo consideras tu estilo de vida?" 1 10))
+;     (bind ?*puntuacion_estilo_vida* ?answer)
+; )
 
 (defrule READ_DATA::end_reading "Go to next step"
     (declare (salience -10))
@@ -296,8 +298,14 @@
     (foreach ?problem ?problemas
         (bind ?filtered_ejercicios (send ?problem get-impide))
         (foreach ?inst ?filtered_ejercicios
-            (bind ?to_delete (nth$ 1 (find-instance ((?instaux Ejercicio)) (eq ?instaux (instance-name ?inst)))))
-            (send ?to_delete delete)
+            (if  (not (member$ ?inst ?*deleted_ejercicios*)) then
+                then
+                    (bind ?to_delete (find-instance ((?instaux Ejercicio)) (eq ?instaux (instance-name ?inst))))
+                    (bind ?to_delete (nth$ 1 ?to_delete))
+                    (send ?to_delete delete)
+                    (bind ?*deleted_ejercicios* (create$ ?*deleted_ejercicios* ?inst))
+            )
+    
         )
     )
     ; (printout t "SIZE: " (length$ ?*ejercicios*) crlf)
@@ -482,9 +490,12 @@
     (foreach ?problem ?problemas
         (bind ?filtered_ejercicios (send ?problem get-es_aliviado_por))
         (foreach ?inst ?filtered_ejercicios
-            (bind ?result (nth$ 1 (find-instance ((?instaux Ejercicio)) (eq ?instaux (instance-name ?inst)))))
-            (bind ?new_score (+ (send ?result get-puntuacion) 40))
-            (send ?result put-puntuacion ?new_score)
+            (if (not (member$ ?inst ?*deleted_ejercicios*))
+                then
+                (bind ?result (nth$ 1 (find-instance ((?instaux Ejercicio)) (eq ?instaux (instance-name ?inst)))))
+                (bind ?new_score (+ (send ?result get-puntuacion) 40))
+                (send ?result put-puntuacion ?new_score)
+            )
         )
     )    
 )
@@ -603,6 +614,7 @@
 
 (defrule SORT::order-by-score
     =>
+    (printout t "Ordenando ejercicios por puntuacion..." crlf)
     (bind ?i 1)
     (while (<= ?i (length$ ?*ejercicios*)) do
         (bind ?j (+ ?i 1))
@@ -619,5 +631,10 @@
         )
         (bind ?i (+ ?i 1))
     )
+
+    ; (foreach ?inst ?*ejercicios*
+    ;     (printout t (send ?inst get-puntuacion) " - " crlf)
+    ; )
+
     (focus SHOW_DATA)
 )
