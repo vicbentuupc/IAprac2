@@ -145,28 +145,28 @@
 
 ;;;Preguntas para la extraccion de nivel;;;
 
-; (defrule READ_DATA::read_carrera_sos "Read how difficult is for the user to run 10m"
-;     ?user <- (object (is-a Persona))
-;     =>
-;     (bind ?answer (numeric_question "Puntua como de dificil te resulta correr durante 10 minutos seguidos" 1 10))
-;     (bind ?*puntuacion_carrera* ?answer)
-;     (assert (abs_carrera))
-; )
+ (defrule READ_DATA::read_carrera_sos "Read how difficult is for the user to run 10m"
+     ?user <- (object (is-a Persona))
+     =>
+     (bind ?answer (numeric_question "Puntua como de dificil te resulta correr durante 10 minutos seguidos" 1 10))
+     (bind ?*puntuacion_carrera* ?answer)
+     (assert (abs_carrera))
+ )
 
-; (defrule READ_DATA::read_felxiones "Read how difficult is for the user to do 10 push-ups"
-;     ?user <- (object (is-a Persona))
-;     =>
-;     (bind ?answer (numeric_question "Puntua como de dificil te resulta hacer 10 flexiones seguidas" 1 10))
-;     (bind ?*puntuacion_flexiones* ?answer)
-;     (assert (abs_flexiones))
-; )
+ (defrule READ_DATA::read_felxiones "Read how difficult is for the user to do 10 push-ups"
+     ?user <- (object (is-a Persona))
+    =>
+     (bind ?answer (numeric_question "Puntua como de dificil te resulta hacer 10 flexiones seguidas" 1 10))
+     (bind ?*puntuacion_flexiones* ?answer)
+     (assert (abs_flexiones))
+ )
 
-; (defrule READ_DATA::read_Life_style "Read how the user considerate his life style level"
-;     ?user <- (object (is-a Persona))
-;     =>
-;     (bind ?answer (numeric_question "¿Como de activo consideras tu estilo de vida?" 1 10))
-;     (bind ?*puntuacion_estilo_vida* ?answer)
-; )
+ (defrule READ_DATA::read_Life_style "Read how the user considerate his life style level"
+     ?user <- (object (is-a Persona))
+     =>
+     (bind ?answer (numeric_question "¿Como de activo consideras tu estilo de vida?" 1 10))
+     (bind ?*puntuacion_estilo_vida* ?answer)
+)
 
 (defrule READ_DATA::end_reading "Go to next step"
     (declare (salience -10))

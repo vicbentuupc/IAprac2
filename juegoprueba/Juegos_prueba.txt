@@ -1,0 +1,101 @@
+Bienvenido al planificador de rutinas!
+Â¿Como te llamas?
+Anna
+
+Â¿Que edad tienes?
+Introduce un numero entre: [18, 100]
+22
+
+Â¿Cuanto pesas aproximadamente(kg)?
+Introduce un numero entre: [10, 100]
+60
+
+Â¿Cuanto mides aproximadamente(cm)?
+Introduce un numero entre: [10, 300]
+170
+
+Â¿De cuantos minutos dispones al dia?
+Introduce un numero entre: [30, 120]
+30
+
+Â¿Tienes alguna lesion o problema de salud?
+Introduce alguno de estos valores: si no
+no
+
+Â¿Tienes algun objetivo concreto en mente?
+Introduce alguno de estos valores: si no
+no
+
+Â¿Quieres trabajar algun grupo musucular en concreto?
+Introduce alguno de estos valores: si no
+no
+
+Puntua como de dificil te resulta correr durante 10 minutos seguidos
+Introduce un numero entre: [1, 10]
+5
+
+Puntua como de dificil te resulta hacer 10 flexiones seguidas
+Introduce un numero entre: [1, 10]
+1
+
+Â¿Como de activo consideras tu estilo de vida?
+Introduce un numero entre: [1, 10]
+10
+
+Procesando datos...
+
+Esta es la rutina que se te recomienda:
+
+Lunes:
+    (Tiempo total de la sesion: 29m)
+    - Burpees
+      4 series de 12 repeticiones
+      Duracion: 14m
+
+    - Dominadas
+      4 series de 8 repeticiones
+      Duracion: 15m
+
+Martes: 
+    (Tiempo total de la sesion: 27m)
+    - SentadillasConSalto
+      4 series de 15 repeticiones
+      Duracion: 15m
+
+    - SaltosDeCaja
+      3 series de 12 repeticiones
+      Duracion: 12m
+
+Miercoles: 
+    (Tiempo total de la sesion: 25m)
+    - PressDeBanca
+      5 series de 10 repeticiones
+      Duracion: 15m
+
+    - FlexionesPike
+      4 series de 10 repeticiones
+      Duracion: 10m
+
+Jueves: 
+    (Tiempo total de la sesion: 20m)
+    - PrensaDePiernas
+      3 series de 12 repeticiones
+      Duracion: 10m
+
+    - SaltosDeTijeraConPeso
+      3 series de 15 repeticiones
+      Duracion: 10m
+
+Viernes: 
+    (Tiempo total de la sesion: 30m)
+    - FlexionesConAplauso
+      3 series de 12 repeticiones
+      Duracion: 8m
+
+    - ZancadasConPeso
+      3 series de 14 repeticiones
+      Duracion: 10m
+
+    - FlexionesDiamante
+      4 series de 15 repeticiones
+      Duracion: 12m

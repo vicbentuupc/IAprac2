@@ -610,7 +610,7 @@
   (tiempo 8)
 )
 
-([SaltosDeTijeraConPeso] of Ejercicio
+([SaltosEnTijeraConPeso] of Ejercicio
   (nivel_fuerza 3)
   (nivel_cardio 4)
   (objetivo rebajar_peso)
@@ -771,7 +771,7 @@
 )
 
 ([DolorDeCodo] of Problema
-  (es_aliviado_por BurroKick PlanchaConRotacion FlexionesDeBrazo PlanchaConAbduccionDePierna)
+  (es_aliviado_por BurroKick PlanchaConRotacion FlexionesDeBrazo PlanchasConAbduccionDePierna)
   (impide CurlDeBicepsConMancuernas RemoConMancuernas ExtensionDeTricepsConMancuernas Dominadas PressArnold PressDeHombroConMancuernas FlexionesDiamante PressDeBanca RemoConBarra)
 )
 
@@ -791,7 +791,7 @@
 ;;; Tanda 2
 
 ([DolorDeCadera] of Problema
-  (es_aliviado_por ElevacionDePiernas BurroKick PlanchaConAbduccionDePierna)
+  (es_aliviado_por ElevacionDePiernas BurroKick PlanchasConAbduccionDePierna)
   (impide SentadillasConSalto SaltosDeCaja ZancadasConPeso SentadillasSumo)
 )
 
